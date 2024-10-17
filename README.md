@@ -1,8 +1,6 @@
-# ML2-Urban-Sound-Classification
-
 <div align="center">
 
-# Labs AI & DS | Lung Cancer Classification with CT Scans
+# ML2 | Urban Sound Classification
 </div>
 
 <p align="center" width="100%">
