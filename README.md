@@ -12,6 +12,9 @@
         <img src="https://img.shields.io/badge/Made%20with-Python-fec8bf?style=for-the-badge&logo=Python&logoColor=fec8bf">
     </a>
     <a>
+        <img src="https://img.shields.io/badge/Made%20with-Tensorflow-fec8bf?style=for-the-badge&logo=tensorflow&logoColor=fec8bf">
+    </a>
+    <a>
         <img src="https://img.shields.io/badge/Made%20with-Jupyter-fec8bf?style=for-the-badge&logo=Jupyter&logoColor=fec8bf">
     </a>
 </div>
