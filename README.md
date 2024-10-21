@@ -45,9 +45,11 @@ This project was developed using a `Notebook`. Therefore if you're looking forwa
 
 Therefore, for more informations regarding the **Virtual Environment** used in Anaconda, consider checking the [DEPENDENCIES.md](https://github.com/EstevesX10/_REPO_NAME_/blob/main/DEPENDENCIES.md) file.
 
-## Link for the Dataset
+## UrbanSound8K Dataset
 
-The datasets used are available [here](_INSERT_DATASETLINK_).
+The ``UrbanSound8k`` dataset contains **8732 labeled sound excerpts** (<=4s) of urban sounds from **10 classes**: air_conditioner, car_horn, children_playing, dog_bark, drilling, enginge_idling, gun_shot, jackhammer, siren, and street_music. The classes are drawn from the **urban sound taxonomy**.
+
+For a **detailed description** of the dataset please consider checking the dataset web page available [here](https://urbansounddataset.weebly.com/urbansound8k.html). In case you are interested in the **compilation process**, the dataset creators have published a paper outlining the Taxonomy for Urban Sound Research. You can access it [here](https://www.justinsalamon.com/uploads/4/3/9/4/4394963/salamon_urbansound_acmmm14.pdf).
 
 ## Project Results
 
