@@ -23,5 +23,6 @@ TestResults.xml
 
 .venv
 .ipynb_checkpoints
+.virtual_documents
 *.gz
 UrbanSound8k/
