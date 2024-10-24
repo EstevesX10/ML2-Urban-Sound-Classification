@@ -45,7 +45,7 @@ def loadAudio(audioID:int, df:pd.DataFrame) -> np.ndarray:
     audioFilePath = formatFilePath(audioFold, audioName)
     
     # Load the audio
-    audio = libr.load(audioFilePath, offset=startTime, duration=audioDuration)
+    audioTimeSeries, samplingRate = libr.load(audioFilePath, offset=startTime, duration=audioDuration)
 
     # Return the Audio
-    return audio
+    return audioTimeSeries, samplingRate
