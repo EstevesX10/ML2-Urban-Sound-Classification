@@ -15,37 +15,31 @@ def formatFilePath(audioFold:int, audioName:str) -> str:
     # Return the file path
     return f'./UrbanSound8K/audio/fold{audioFold}/{audioName}'
 
-def loadAudio(audioID:int, df:pd.DataFrame) -> np.ndarray:
+def loadAudio(audioSliceName:int, audioDuration:int, df:pd.DataFrame) -> np.ndarray:
     """
     # Description
         -> Loads a audio file from the dataset.
     -------------------------------------------
-    := param: audioID - Audio Identification Number inside the dataset.
+    := param: audioSliceName - Audio Identification inside the dataset.
+    := param: audioDuration - Duration to be considered of the audio.
     := param: df - Pandas DataFrame with the dataset's metadata.
     := return: Audio object.
     """
     
     # Get the audio entry
-    df_selectedAudio = df.loc[df['fsID'] == audioID]
+    df_selectedAudio = df[df['slice_file_name'] == audioSliceName]
 
-    # Get audio name
-    audioName = df_selectedAudio['slice_file_name'][0]
+    # Get the row index of the entry
+    idx = df_selectedAudio.index.values.astype(int)[0]
 
     # Fetch audio fold
-    audioFold = df_selectedAudio['fold'][0]
-    
-    # Get Start and End Time
-    startTime = df_selectedAudio['start'][0]
-    endTime = df_selectedAudio['end'][0]
-
-    # Compute audio duration
-    audioDuration = endTime - startTime
+    audioFold = df_selectedAudio['fold'][idx]
     
     # Format the File Path
-    audioFilePath = formatFilePath(audioFold, audioName)
+    audioFilePath = formatFilePath(audioFold, audioSliceName)
     
     # Load the audio
-    audioTimeSeries, samplingRate = libr.load(audioFilePath, offset=startTime, duration=audioDuration)
+    audioTimeSeries, samplingRate = libr.load(audioFilePath, duration=audioDuration)
 
     # Return the Audio
     return audioTimeSeries, samplingRate
