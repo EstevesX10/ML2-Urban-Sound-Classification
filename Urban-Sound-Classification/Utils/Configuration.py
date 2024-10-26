@@ -3,7 +3,7 @@ def loadConfig() -> dict:
     # Description
         -> This function aims to store all the configuration related parameters used inside the project.
     ----------------------------------------------------------------------------------------------------
-    := return: Dictionary with some of the important file paths of the project.
+    := return: Dictionary with some of the important constants/values used in the project.
     """
 
     # Computing Values
@@ -18,4 +18,20 @@ def loadConfig() -> dict:
         'WINDOW_LENGTH':windowLength,
         'N_FFT':2**10,
         'TIME_SIZE':timeSize
+    }
+
+def loadPathsConfig() -> dict:
+    """
+    # Description
+        -> This function aims to store all the path configuration related parameters used inside the project.
+    ----------------------------------------------------------------------------------------------------
+    := return: Dictionary with some of the important file paths of the project.
+    """
+    return {
+        'ExploratoryDataAnalysis': './ExperimentalResults/ExploratoryDataAnalysis',
+        'ModelDevelopmentAndEvaluation': {
+            'MLP': './ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/',
+            'CNN': './ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/',
+            'RNN': './ExperimentalResults/ModelDevelopmentAndEvaluation/RNN/' # Maybe change later
+        }
     }
