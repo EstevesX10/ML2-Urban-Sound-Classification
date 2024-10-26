@@ -2,6 +2,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
+import os
 
 def pastelizeColor(c:tuple, weight:float=None) -> np.ndarray:
     """
@@ -21,7 +22,7 @@ def pastelizeColor(c:tuple, weight:float=None) -> np.ndarray:
     # Returns a tuple with the values for the pastel version of the color provided
     return mcolors.to_rgba((np.array(mcolors.to_rgb(c)) * (1 - weight) + white * weight))
 
-def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategorical:bool=None, featureDecoder:dict=None) -> None:
+def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategorical:bool=None, pathsConfig:dict=None, featureDecoder:dict=None) -> None:
     """
     # Description
         -> This function plots the distribution of a feature (column) in a dataset.
@@ -29,6 +30,7 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
     := param: df - Pandas DataFrame containing the dataset.
     := param: feature - Feature of the dataset to plot.
     := param: forceCategorical - Forces a categorical analysis on a numerical feature.
+    := param: pathsConfig - Dictionary with important paths used to store some plots.
     := param: featureDecoder - Dictionary with the conversion between the column value and its label [From Integer to String].
     """
 
@@ -49,6 +51,12 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
 
     # Set default value
     forceCategorical = False if forceCategorical is None else forceCategorical
+
+    # Define a file path to store the final plot
+    if pathsConfig is not None:
+        savePlotPath = pathsConfig['ExploratoryDataAnalysis'] + '/' + f'{feature}Distribution.png'
+    else:
+        savePlotPath = None
 
     # Check the feature type
     if pd.api.types.is_numeric_dtype(df[feature]):
@@ -101,6 +109,10 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
             plt.xlabel(f'{feature} Labels', labelpad=20)
             plt.ylabel('Number of Samples')
             
+            # Save the plot
+            if savePlotPath is not None and not os.path.exists(savePlotPath):
+                plt.savefig(savePlotPath, dpi=300, bbox_inches='tight')
+
             # Display the plot
             plt.show()
         
@@ -123,6 +135,10 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
             # Plot the grid behind the bars
             plt.grid(True, zorder=1)
             
+            # Save the plot
+            if savePlotPath is not None and not os.path.exists(savePlotPath):
+                plt.savefig(savePlotPath, dpi=300, bbox_inches='tight')
+
             # Display the plot
             plt.show()
 
@@ -166,7 +182,99 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
             # Tilt x-axis labels by 0 degrees and adjust the fontsize
             plt.xticks(rotation=25, ha='center', fontsize=8)
 
+            # Save the plot
+            if savePlotPath is not None and not os.path.exists(savePlotPath):
+                plt.savefig(savePlotPath, dpi=300, bbox_inches='tight')
+
             # Display the plot
             plt.show()
     else:
         print(f"The feature '{feature}' is not supported for plotting.")
+
+def plotFeatureDistributionByFold(df:pd.DataFrame=None, classFeature:str=None, foldFeature:str=None, pathsConfig:dict=None, featureDecoder:dict=None) -> None:
+    """
+    # Description
+        -> Plots the class distribution for each fold in the dataset.
+    -----------------------------------------------------------------
+    := param: df - Pandas DataFrame containing the dataset.
+    := param: classFeature - The class feature of the dataset.
+    := param: foldFeature - The feature that indicates the fold.
+    := param: pathsConfig - Dictionary with important paths used to store some plots.
+    := param: featureDecoder - Dictionary with the conversion between the class value and its label.
+    """
+
+    # Check if DataFrame, class feature, and fold feature were provided
+    if df is None or classFeature is None or foldFeature is None:
+        print('DataFrame, class feature, or fold feature is missing.')
+        return
+    
+    # Check if the features exist in the DataFrame
+    if classFeature not in df.columns or foldFeature not in df.columns:
+        print(f"Either '{classFeature}' or '{foldFeature}' is not present in the dataset.")
+        return
+    
+    # Get the unique folds
+    uniqueFolds = sorted(df[foldFeature].unique())
+    
+    # Set up a 2x5 grid for the subplots
+    fig, axes = plt.subplots(2, 5, figsize=(18, 8))
+    fig.suptitle(f'{classFeature} Distribution on Each Fold', fontsize=16, y=0.95)
+    
+    for i, fold in enumerate(uniqueFolds):
+        # Filter the DataFrame for the current fold
+        foldData = df[df[foldFeature] == fold]
+        
+        # Get value counts for the class feature
+        valueCounts = foldData[classFeature].value_counts().sort_index()
+        
+        # Use the featureDecoder if provided
+        if featureDecoder is not None:
+            labels = valueCounts.index.map(lambda x: featureDecoder.get(x, x))
+        else:
+            labels = valueCounts.index
+        
+        # Create a color map for the bars
+        cmap = plt.get_cmap('viridis')
+        colors = [pastelizeColor(cmap(i / (len(valueCounts) - 1))) for i in range(len(valueCounts))]
+        
+        # Get the row and column index for the subplot grid
+        row, col = divmod(i, 5)
+        
+        # Plot the bars in the correct subplot
+        # bars = axes[row, col].bar(labels.astype(str), valueCounts.values, color=colors, edgecolor='lightgrey', alpha=1.0, width=0.4, zorder=2)
+
+        # Adjust the positions of the bars and increase their thickness
+        positions = np.arange(len(labels))  # Positions for the bars
+        bars = axes[row, col].bar(positions, valueCounts.values, color=colors, edgecolor='lightgrey', alpha=1.0, width=0.8, zorder=2)
+        
+        # Add text (value counts) to each bar at the center
+        for j, bar in enumerate(bars):
+            yval = bar.get_height()
+            lighterColor = pastelizeColor(colors[j], weight=0.2)
+            axes[row, col].text(bar.get_x() + bar.get_width() / 2,
+                                yval / 2,
+                                int(yval),
+                                ha='center',
+                                va='center',
+                                fontsize=7,
+                                color='black',
+                                bbox=dict(facecolor=lighterColor, edgecolor='none', boxstyle='round,pad=0.2'))
+        
+        # Add title and labels
+        axes[row, col].set_title(f'[Fold] {fold}', fontsize=12)
+        axes[row, col].set_xlabel(f'{classFeature} Labels', fontsize=10)
+        axes[row, col].set_ylabel('Number of Samples', fontsize=10)
+        axes[row, col].grid(True, zorder=1)
+        axes[row, col].set_xticks(positions)
+        axes[row, col].set_xticklabels(labels.astype(str), rotation=50, ha='right', fontsize=8)
+        
+    # Adjust layout for better display
+    plt.tight_layout(rect=[0, 0, 1, 0.97])
+
+    # Save the plot to a file
+    if pathsConfig is not None:
+        savePlotPath = pathsConfig['ExploratoryDataAnalysis'] + '/' + f'{classFeature}DistributionPerFold.png'
+        if not os.path.exists(savePlotPath):
+            plt.savefig(savePlotPath, dpi=300, bbox_inches='tight')
+
+    plt.show()
