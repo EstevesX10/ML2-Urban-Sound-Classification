@@ -15,13 +15,14 @@ def formatFilePath(audioFold:int, audioName:str) -> str:
     # Return the file path
     return f'./UrbanSound8K/audio/fold{audioFold}/{audioName}'
 
-def loadAudio(audioSliceName:int, audioDuration:int, df_audio:pd.DataFrame) -> np.ndarray:
+def loadAudio(audioSliceName:int, audioDuration:int, samplingRate:int, df_audio:pd.DataFrame) -> np.ndarray:
     """
     # Description
         -> Loads a audio file from the dataset.
     -------------------------------------------
     := param: audioSliceName - Audio Identification inside the dataset.
     := param: audioDuration - Duration to be considered of the audio.
+    := param: samplingRate - Target sampling rate for the audio.
     := param: df_audio - Pandas DataFrame with the dataset's metadata.
     := return: Audio object.
     """
@@ -39,7 +40,7 @@ def loadAudio(audioSliceName:int, audioDuration:int, df_audio:pd.DataFrame) -> n
     audioFilePath = formatFilePath(audioFold, audioSliceName)
     
     # Load the audio
-    audioTimeSeries, samplingRate = libr.load(audioFilePath, duration=audioDuration)
+    audioTimeSeries, _ = libr.load(audioFilePath, duration=audioDuration, sr=samplingRate)
 
     # Return the Audio
-    return audioTimeSeries, samplingRate
+    return audioTimeSeries
