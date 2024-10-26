@@ -22,7 +22,7 @@ def pastelizeColor(c:tuple, weight:float=None) -> np.ndarray:
     # Returns a tuple with the values for the pastel version of the color provided
     return mcolors.to_rgba((np.array(mcolors.to_rgb(c)) * (1 - weight) + white * weight))
 
-def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategorical:bool=None, pathsConfig:dict=None, featureDecoder:dict=None) -> None:
+def plotFeatureDistribution(df:pd.DataFrame=None, classFeature:str=None, forceCategorical:bool=None, pathsConfig:dict=None, featureDecoder:dict=None) -> None:
     """
     # Description
         -> This function plots the distribution of a feature (column) in a dataset.
@@ -40,13 +40,13 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
         return
     
     # Check if a feature was given
-    if feature is None:
+    if classFeature is None:
         print('Missing a feature to Analyse.')
         return
 
     # Check if the feature exists on the dataset
-    if feature not in df.columns:
-        print(f"The feature '{feature}' is not present in the dataset.")
+    if classFeature not in df.columns:
+        print(f"The feature '{classFeature}' is not present in the dataset.")
         return
 
     # Set default value
@@ -54,19 +54,19 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
 
     # Define a file path to store the final plot
     if pathsConfig is not None:
-        savePlotPath = pathsConfig['ExploratoryDataAnalysis'] + '/' + f'{feature}Distribution.png'
+        savePlotPath = pathsConfig['ExploratoryDataAnalysis'] + '/' + f'{classFeature}Distribution.png'
     else:
         savePlotPath = None
 
     # Check the feature type
-    if pd.api.types.is_numeric_dtype(df[feature]):
+    if pd.api.types.is_numeric_dtype(df[classFeature]):
         # For numerical class-like features, we can treat them as categories
         if forceCategorical:
             # Create a figure
             plt.figure(figsize=(8, 5))
 
             # Get unique values and their counts
-            valueCounts = df[feature].value_counts().sort_index()
+            valueCounts = df[classFeature].value_counts().sort_index()
             
             # Check if a feature Decoder was given and map the values if possible
             if featureDecoder is not None:
@@ -105,8 +105,8 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
                          bbox=dict(facecolor=lighterColor, edgecolor='none', boxstyle='round,pad=0.3'))
 
             # Add title and labels
-            plt.title(f'Distribution of {feature}')
-            plt.xlabel(f'{feature} Labels', labelpad=20)
+            plt.title(f'Distribution of {classFeature}')
+            plt.xlabel(f'{classFeature} Labels', labelpad=20)
             plt.ylabel('Number of Samples')
             
             # Save the plot
@@ -122,11 +122,11 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
             plt.figure(figsize=(8, 5))
 
             # Plot the histogram with gradient colors
-            plt.hist(df[feature], bins=30, color='lightgreen', edgecolor='lightgrey', alpha=1.0, zorder=2)
+            plt.hist(df[classFeature], bins=30, color='lightgreen', edgecolor='lightgrey', alpha=1.0, zorder=2)
             
             # Add title and labels
-            plt.title(f'Distribution of {feature}')
-            plt.xlabel(feature)
+            plt.title(f'Distribution of {classFeature}')
+            plt.xlabel(classFeature)
             plt.ylabel('Frequency')
             
             # Tilt x-axis labels by 0 degrees and adjust the fontsize
@@ -143,12 +143,12 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
             plt.show()
 
     # For categorical features, use a bar plot
-    elif pd.api.types.is_categorical_dtype(df[feature]) or df[feature].dtype == object:
+    elif pd.api.types.is_categorical_dtype(df[classFeature]) or df[classFeature].dtype == object:
             # Create a figure
             plt.figure(figsize=(8, 5))
 
             # Get unique values and their counts
-            valueCounts = df[feature].value_counts().sort_index()
+            valueCounts = df[classFeature].value_counts().sort_index()
             
             # Create a color map from green to red
             cmap = plt.get_cmap('viridis')  # Reversed 'Red-Yellow-Green' colormap (green to red)
@@ -175,8 +175,8 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
                          bbox=dict(facecolor=lighterColor, edgecolor='none', boxstyle='round,pad=0.3'))
 
             # Add title and labels
-            plt.title(f'Distribution of {feature}')
-            plt.xlabel(f'{feature} Labels', labelpad=20)
+            plt.title(f'Distribution of {classFeature}')
+            plt.xlabel(f'{classFeature} Labels', labelpad=20)
             plt.ylabel('Number of Samples')
             
             # Tilt x-axis labels by 0 degrees and adjust the fontsize
@@ -189,7 +189,7 @@ def plotFeatureDistribution(df:pd.DataFrame=None, feature:str=None, forceCategor
             # Display the plot
             plt.show()
     else:
-        print(f"The feature '{feature}' is not supported for plotting.")
+        print(f"The feature '{classFeature}' is not supported for plotting.")
 
 def plotFeatureDistributionByFold(df:pd.DataFrame=None, classFeature:str=None, foldFeature:str=None, pathsConfig:dict=None, featureDecoder:dict=None) -> None:
     """
