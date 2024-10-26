@@ -7,17 +7,18 @@ def loadConfig() -> dict:
     """
 
     # Computing Values
-    sampleRate = 22050
-    hopLength = round(sampleRate * 0.0125)
-    windowLength = round(sampleRate * 0.023)
-    timeSize = ((4*sampleRate) // (hopLength + 1))
+    samplingRate = 22050
+    hopLength = round(samplingRate * 0.0125)
+    windowLength = round(samplingRate * 0.023)
+    timeSize = ((4*samplingRate) // (hopLength + 1))
     return {
-        'DURATION':4,
-        'SAMPLE_RATE':sampleRate,
-        'HOP_LENGTH':hopLength,
-        'WINDOW_LENGTH':windowLength,
-        'N_FFT':2**10,
-        'TIME_SIZE':timeSize
+        'DURATION':4,                   # Duration of the Audio
+        'SAMPLING_RATE':samplingRate,   # Number of samples of audio taken per second when converting it from a continuous to a digital signal
+        'HOP_LENGTH':hopLength,         # The number of samples to advance between frames
+        'WINDOW_LENGTH':windowLength,   #
+        'N_FFT':2**10,                  # Length of the windowed signal after padding with zeros
+        'TIME_SIZE':timeSize,           #
+        'N_CHROMA':12                   #
     }
 
 def loadPathsConfig() -> dict:
