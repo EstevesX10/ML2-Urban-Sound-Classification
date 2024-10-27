@@ -7,18 +7,19 @@ def loadConfig() -> dict:
     """
 
     # Computing Values
-    samplingRate = 22050
-    hopLength = round(samplingRate * 0.0125)
-    windowLength = round(samplingRate * 0.023)
-    timeSize = ((4*samplingRate) // (hopLength + 1))
+    sampleRate = 44100 # Higher rate to be able to capture high resolution audios like the ones that come from harmonic waves.
+    hopLength = round(sampleRate * 0.0125)
+    windowLength = round(sampleRate * 0.023)
+    timeSize = (4 * sampleRate // hopLength + 1)
     return {
-        'DURATION':4,                   # Duration of the Audio
-        'SAMPLING_RATE':samplingRate,   # Number of samples of audio taken per second when converting it from a continuous to a digital signal
+        'DURATION':4,                   # Length of each audio sample in the dataset.
+        'SAMPLE_RATE':sampleRate,       # Number of samples of audio taken per second when converting it from a continuous to a digital signal
         'HOP_LENGTH':hopLength,         # The number of samples to advance between frames
-        'WINDOW_LENGTH':windowLength,   #
+        'WINDOW_LENGTH':windowLength,   # Number of samples used in each frame for frequency analysis, or the length of the window in which the Fourier Transform is applied.
         'N_FFT':2**10,                  # Length of the windowed signal after padding with zeros
-        'TIME_SIZE':timeSize,           #
-        'N_CHROMA':12                   #
+        'TIME_SIZE':timeSize,           # Number of time frames or segments that the audio will be divided into after applying the hop length and windowing.
+        'N_CHROMA':12,                  # Number of pitch classes (e.g., C, C#, D, etc.) in the chroma feature representation.
+        'N_MFCC':13                     # Number of Mel-Frequency Cepstral Coefficients (MFCCs) to be extracted
     }
 
 def loadPathsConfig() -> dict:

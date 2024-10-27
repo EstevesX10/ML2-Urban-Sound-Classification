@@ -15,15 +15,16 @@ def formatFilePath(audioFold:int, audioName:str) -> str:
     # Return the file path
     return f'./UrbanSound8K/audio/fold{audioFold}/{audioName}'
 
-def loadAudio(audioSliceName:int, audioDuration:int, samplingRate:int, df_audio:pd.DataFrame) -> np.ndarray:
+def loadAudio(df_audio:pd.DataFrame, audioSliceName:int, audioDuration:int, targetSampleRate:int, usePadding:bool) -> np.ndarray:
     """
     # Description
         -> Loads a audio file from the dataset.
     -------------------------------------------
+    := param: df_audio - Pandas DataFrame with the dataset's metadata.
     := param: audioSliceName - Audio Identification inside the dataset.
     := param: audioDuration - Duration to be considered of the audio.
-    := param: samplingRate - Target sampling rate for the audio.
-    := param: df_audio - Pandas DataFrame with the dataset's metadata.
+    := param: targetSampleRate - Target sampling rate for the audio.
+    := param: usePadding - Whether or not to perform zero padding to the resampled audio on the target sample rate.
     := return: Audio object.
     """
     
@@ -39,8 +40,15 @@ def loadAudio(audioSliceName:int, audioDuration:int, samplingRate:int, df_audio:
     # Format the File Path
     audioFilePath = formatFilePath(audioFold, audioSliceName)
     
-    # Load the audio
-    audioTimeSeries, _ = libr.load(audioFilePath, duration=audioDuration, sr=samplingRate)
+    # Load the audio [Using standard sampling rate]
+    audioTimeSeries, samplingRate = libr.load(audioFilePath, duration=audioDuration, sr=None)
 
-    # Return the Audio
+    # Resample the audio for the target sample rate
+    audioTimeSeries = libr.resample(audioTimeSeries, orig_sr=samplingRate, target_sr=targetSampleRate)
+
+    # Perform padding on the audio, so that each time series have the same length
+    if usePadding:
+        audioTimeSeries = libr.util.fix_length(data=audioTimeSeries, size=audioDuration*targetSampleRate, mode='constant')
+
+    # Return the padded Audio
     return audioTimeSeries
