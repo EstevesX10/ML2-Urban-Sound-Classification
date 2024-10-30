@@ -3,6 +3,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import os
+import librosa
 from PIL import Image
 import matplotlib.image as mpimg
 
@@ -331,3 +332,46 @@ def plotFeatureDistributionByFold(df:pd.DataFrame=None, classFeature:str=None, f
             plt.savefig(savePlotPath, dpi=300, bbox_inches='tight')
 
         plt.show()
+
+def plotMelSpectrogram(audio:np.ndarray, sample_rate:int, n_mels:int=128, fmin:int=0, fmax=None) -> None:
+    """
+    # Description
+        -> Plots a Mel-frequency spectrogram.
+    -----------------------------------------
+    Parameters:
+    := param: audio - Audio time series.
+    := param: sample_rate - Sample rate of the audio.
+    := param: n_mels - Number of Mel bands to generate.
+    := param: fmin - Minimum frequency for the Mel filter bank.
+    := param: fmax - Maximum frequency for the Mel filter bank.
+    """
+
+    # Compute the Mel spectrogram
+    mel_spectrogram = librosa.feature.melspectrogram(y=audio, sr=sample_rate, n_mels=n_mels, fmin=fmin, fmax=fmax)
+
+    # Convert to dB for visualization
+    mel_spectrogram_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
+
+    # Create a figure for the spectrogram
+    plt.figure(figsize=(12, 6))
+    ax = plt.axes()
+    spec = librosa.display.specshow(mel_spectrogram_db, sr=sample_rate, x_axis='time', y_axis='mel', fmin=fmin, fmax=fmax, ax=ax, cmap='PuBu')
+
+    # Customize colorbar
+    cbar = plt.colorbar(spec, format='%+2.0f dB')
+    cbar.set_label('Amplitude (dB)', rotation=270, labelpad=15, fontsize=12)
+
+    # Add both labels and title
+    plt.title('Mel-frequency Spectrogram', fontsize=16, pad=20)
+    plt.xlabel("Time (s)", fontsize=14)
+    plt.ylabel("Frequency (Mel)", fontsize=14)
+    
+    # Customize ticks
+    ax.tick_params(axis='both', which='major', labelsize=12)
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
+    ax.spines['left'].set_linewidth(1.1)
+    ax.spines['bottom'].set_linewidth(1.1)
+
+    plt.tight_layout(pad=2.0)
+    plt.show()
