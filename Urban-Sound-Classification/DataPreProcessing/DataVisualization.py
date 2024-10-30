@@ -353,7 +353,7 @@ def plotMelSpectrogram(audio:np.ndarray, sample_rate:int, n_mels:int=128, fmin:i
     mel_spectrogram_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
 
     # Create a figure for the spectrogram
-    plt.figure(figsize=(12, 6))
+    plt.figure(figsize=(9, 5))
     ax = plt.axes()
     spec = librosa.display.specshow(mel_spectrogram_db, sr=sample_rate, x_axis='time', y_axis='mel', fmin=fmin, fmax=fmax, ax=ax, cmap='PuBu')
 
