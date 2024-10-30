@@ -31,6 +31,48 @@ def loadPathsConfig() -> dict:
     """
     return {
         'ExploratoryDataAnalysis': './ExperimentalResults/ExploratoryDataAnalysis',
+        'Datasets': {
+            'Fold-1': {
+                '1-Dimensional-Data':'./Datasets/Fold-1/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-1/2-Dimensional-Data.csv',
+            },
+            'Fold-2': {
+                '1-Dimensional-Data':'./Datasets/Fold-2/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-2/2-Dimensional-Data.csv',
+            },
+            'Fold-3': {
+                '1-Dimensional-Data':'./Datasets/Fold-3/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-3/2-Dimensional-Data.csv',
+            },
+            'Fold-4': {
+                '1-Dimensional-Data':'./Datasets/Fold-4/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-4/2-Dimensional-Data.csv',
+            },
+            'Fold-5': {
+                '1-Dimensional-Data':'./Datasets/Fold-5/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-5/2-Dimensional-Data.csv',
+            },
+            'Fold-6': {
+                '1-Dimensional-Data':'./Datasets/Fold-6/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-6/2-Dimensional-Data.csv',
+            },
+            'Fold-7': {
+                '1-Dimensional-Data':'./Datasets/Fold-7/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-7/2-Dimensional-Data.csv',
+            },
+            'Fold-8': {
+                '1-Dimensional-Data':'./Datasets/Fold-8/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-8/2-Dimensional-Data.csv',
+            },
+            'Fold-9': {
+                '1-Dimensional-Data':'./Datasets/Fold-9/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-9/2-Dimensional-Data.csv',
+            },
+            'Fold-10': {
+                '1-Dimensional-Data':'./Datasets/Fold-10/1-Dimensional-Data.csv',
+                '2-Dimensional-Data':'./Datasets/Fold-10/2-Dimensional-Data.csv',
+            },  
+        },
         'ModelDevelopmentAndEvaluation': {
             'MLP': './ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/',
             'CNN': './ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/',
