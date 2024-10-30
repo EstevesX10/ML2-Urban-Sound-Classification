@@ -26,4 +26,5 @@ TestResults.xml
 .virtual_documents
 *.gz
 UrbanSound8k/
+Datasets/
 __pycache__/
