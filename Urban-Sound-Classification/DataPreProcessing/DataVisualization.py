@@ -380,6 +380,52 @@ def plotAudioWave(df_audio:pd.DataFrame=None, audioSliceName:str=None, config:di
     plt.tight_layout()
     plt.show()
 
+def plotAudio1DimensionalFeature(audioData: np.ndarray, extracted1DimensionalFeature: np.ndarray, featureName: str, yLabel: str, color: str, config: dict) -> None:
+    """
+    # Description
+        -> This function helps plot all the extracted 1 Dimensional Features.
+    -------------------------------------------------------------------------
+    := param: audioData - Audio Time Series within a numpy array.
+    := param: extracted1DimensionalFeature - Numpy Array with the 1 Dimensional Feature extracted from the AudioData.
+    := param: featureName - Name of the Feature extracted from the audio.
+    := param: yLabel - Label for the y-axis.
+    := param: color - Color for the line on the feature's plot.
+    := param: config - Dictionary with important values used during audio processing tasks within the project.
+    := return: None, since we are only displaying the features.
+    """
+   
+    # Flatten the extracted 1-D feature
+    flattenedFeature = extracted1DimensionalFeature.flatten()
+    
+    # Apply a style sheet to the plot
+    plt.style.use('seaborn-v0_8-pastel')
+
+    # Create a figure
+    plt.figure(figsize=(10, 6))
+    
+    # Plot the audio waveform
+    plt.subplot(2, 1, 1)
+    librosa.display.waveshow(audioData, sr=config['SAMPLE_RATE'], alpha=0.6, color='dodgerblue')
+    plt.title('[Normalized] Audio Wave', fontsize=14)
+    plt.xlabel('Time (s)', fontsize=12)
+    plt.ylabel('Amplitude', fontsize=12)
+    plt.grid(True)
+    
+    # Plot the flattened feature
+    plt.subplot(2, 1, 2)
+    frames = range(len(flattenedFeature))
+    t = librosa.frames_to_time(frames, sr=config['SAMPLE_RATE'])
+    plt.plot(t, flattenedFeature, color=color, label=featureName)
+    plt.title(f'{featureName}', fontsize=14)
+    plt.xlabel('Time (s)', fontsize=12)
+    plt.ylabel(yLabel, fontsize=12)
+    plt.grid(True)
+    plt.legend(loc='upper right', fontsize=12)
+    
+    # Adjust the layout
+    plt.tight_layout(pad=3.0)
+    plt.show()
+
 def plotMelSpectrogram(audio:np.ndarray, sample_rate:int, n_mels:int=128, fmin:int=0, fmax=None) -> None:
     """
     # Description
