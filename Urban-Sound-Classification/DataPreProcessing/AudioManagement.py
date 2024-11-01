@@ -1,6 +1,7 @@
 import librosa as libr
 import numpy as np
 import pandas as pd
+from IPython import display
 
 def formatFilePath(audioFold:int, audioName:str) -> str:
     """
@@ -52,3 +53,28 @@ def loadAudio(df_audio:pd.DataFrame, audioSliceName:int, audioDuration:int, targ
 
     # Return the padded Audio
     return audioTimeSeries
+
+def showcaseAudio(df_audio:pd.DataFrame, audioSliceName:int) -> display.Audio:
+    """
+    # Description
+        -> Creates a simple audio player for the selected file from the dataset.
+    ----------------------------------------------------------------------------
+    := param: df_audio - Pandas DataFrame with the dataset's metadata.
+    := param: audioSliceName - Audio Identification inside the dataset.
+    := return: Audio object that helps listen to the selected audio file.
+    """
+    
+    # Get the audio entry
+    df_audio_selectedAudio = df_audio[df_audio['slice_file_name'] == audioSliceName]
+
+    # Get the row index of the entry
+    idx = df_audio_selectedAudio.index.values.astype(int)[0]
+
+    # Fetch audio fold
+    audioFold = df_audio_selectedAudio['fold'][idx]
+
+    # Format the File Path
+    audioFilePath = formatFilePath(audioFold, audioSliceName)
+
+    # Return the Audio
+    return display.Audio(audioFilePath)

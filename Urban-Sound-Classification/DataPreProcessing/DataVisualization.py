@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as mcolors
 import os
 import librosa
+from .AudioManagement import (loadAudio)
 from PIL import Image
 import matplotlib.image as mpimg
 
@@ -30,7 +31,7 @@ def plotFeatureDistribution(df:pd.DataFrame=None, classFeature:str=None, forceCa
     # Description
         -> This function plots the distribution of a feature (column) in a dataset.
     -------------------------------------------------------------------------------
-    := param: df - Pandas DataFrame containing the dataset.
+    := param: df - Pandas DataFrame containing the dataset metadata.
     := param: feature - Feature of the dataset to plot.
     := param: forceCategorical - Forces a categorical analysis on a numerical feature.
     := param: pathsConfig - Dictionary with important paths used to store some plots.
@@ -223,7 +224,7 @@ def plotFeatureDistributionByFold(df:pd.DataFrame=None, classFeature:str=None, f
     # Description
         -> Plots the class distribution for each fold in the dataset.
     -----------------------------------------------------------------
-    := param: df - Pandas DataFrame containing the dataset.
+    := param: df - Pandas DataFrame containing the dataset metadata.
     := param: classFeature - The class feature of the dataset.
     := param: foldFeature - The feature that indicates the fold.
     := param: pathsConfig - Dictionary with important paths used to store some plots.
@@ -332,6 +333,52 @@ def plotFeatureDistributionByFold(df:pd.DataFrame=None, classFeature:str=None, f
             plt.savefig(savePlotPath, dpi=300, bbox_inches='tight')
 
         plt.show()
+
+def plotAudioWave(df_audio:pd.DataFrame=None, audioSliceName:str=None, config:dict=None) -> None:
+    """
+    # Description
+        -> This function plots the selected audio's wave form. 
+    ----------------------------------------------------------
+    := param: df_audio - Pandas DataFrame with the dataset's metadata.
+    := param: audioSliceName - Audio Identification inside the dataset.
+    := param: config - Dictionary with important values used during audio processing tasks within the project.
+    := return: None, since we are only plotting the audio's wave.
+    """
+    
+    # Check if the dataframe with the dataset's metadata was given
+    if df_audio is None:
+        raise ValueError("Missing a DataFrame with the dataset's metadata!")
+
+    # Check if a audio was selected
+    if audioSliceName is None:
+        raise ValueError("Missing a Audio to plot the wave form of!")
+    
+    # Check if the config dictionary was provided
+    if config is None:
+        raise ValueError("Missing the Configuration dictionary!")
+
+    # Load the Audio
+    data = loadAudio(df_audio=df_audio, audioSliceName=audioSliceName, audioDuration=config['DURATION'], targetSampleRate=config['SAMPLE_RATE'], usePadding=True)
+
+    # Set up the plot
+    plt.figure(figsize=(12,4))
+
+    # Plot the waveform
+    librosa.display.waveshow(data, sr=config['SAMPLE_RATE'], color='dodgerblue', alpha=0.7)
+    plt.fill_between(config['DURATION'], data, color='dodgerblue', alpha=0.3)  # Fill color for better readability
+
+    # Add title and labels
+    plt.title('[Normalized] Audio Wave', fontsize=16, pad=20)
+    plt.xlabel("Time (s)", fontsize=14)
+    plt.ylabel("Amplitude", fontsize=14)
+
+    # Customize grid and spines
+    plt.grid(visible=True, which='both', color='gray', linestyle='--', linewidth=0.5, alpha=0.5)
+    plt.gca().spines['top'].set_visible(False)
+    plt.gca().spines['right'].set_visible(False)
+
+    plt.tight_layout()
+    plt.show()
 
 def plotMelSpectrogram(audio:np.ndarray, sample_rate:int, n_mels:int=128, fmin:int=0, fmax=None) -> None:
     """
