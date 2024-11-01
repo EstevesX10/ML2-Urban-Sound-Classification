@@ -380,7 +380,7 @@ def plotAudioWave(df_audio:pd.DataFrame=None, audioSliceName:str=None, config:di
     plt.tight_layout()
     plt.show()
 
-def plotAudio1DimensionalFeature(audioData: np.ndarray, extracted1DimensionalFeature: np.ndarray, featureName: str, yLabel: str, color: str, config: dict) -> None:
+def plotAudio1DimensionalFeature(audioData:np.ndarray=None, extracted1DimensionalFeature:np.ndarray=None, featureName:str=None, yLabel:str=None, color:str=None, config:dict=None) -> None:
     """
     # Description
         -> This function helps plot all the extracted 1 Dimensional Features.
@@ -394,6 +394,33 @@ def plotAudio1DimensionalFeature(audioData: np.ndarray, extracted1DimensionalFea
     := return: None, since we are only displaying the features.
     """
    
+    # Check if a audio time series was provided
+    if audioData is None:
+        raise ValueError("Missing a Audio Time Series!")
+
+    # Check if a extracted feature was provided
+    if extracted1DimensionalFeature is None:
+        raise ValueError("Missing extracted Feature")
+    
+    # Check extracted feature shape
+    if extracted1DimensionalFeature.shape[0] > 1:
+        raise ValueError("Shape mismatch of the extracted feature [It does not correspond to a 1-Dimensional Feature]")
+
+    # Check if a feature name was given
+    if featureName is None:
+        raise ValueError("Missing a Feature Name!")
+
+    # Verify if a y Label description was given
+    if yLabel is None:
+        raise ValueError("Missing a Y-Axis Description!")
+
+    # Check if a config was given
+    if config is None:
+        raise ValueError("Missing a configuration dictionary!")
+
+    # Setting a default color    
+    color = 'r' if color is None else color
+
     # Flatten the extracted 1-D feature
     flattenedFeature = extracted1DimensionalFeature.flatten()
     
@@ -426,7 +453,42 @@ def plotAudio1DimensionalFeature(audioData: np.ndarray, extracted1DimensionalFea
     plt.tight_layout(pad=3.0)
     plt.show()
 
-def plotMelSpectrogram(audio:np.ndarray, sample_rate:int, n_mels:int=128, fmin:int=0, fmax=None) -> None:
+def plotChromaFeatures(audioData:np.ndarray=None, config:dict=None) -> None:
+    """
+    # Description
+        -> This function plots the audio's chroma features.
+    -------------------------------------------------------
+    := param: audioData - Audio Time Series within a numpy array.
+    := param: config - Dictionary with important values used during audio processing tasks within the project.
+    := return: None, since we are simply plotting some data.
+    """
+    
+    # Check if a audio time series was provided
+    if audioData is None:
+        raise ValueError("Missing a Audio Time Series!")
+
+    # Check if a config was given
+    if config is None:
+        raise ValueError("Missing a configuration dictionary!")
+
+    # Compute the Chroma Features
+    chroma_stft = librosa.feature.chroma_stft(y=audioData, n_chroma=config['N_CHROMA'], sr=config['SAMPLE_RATE'], n_fft=config['N_FFT'], hop_length=config['HOP_LENGTH'], win_length=config['WINDOW_LENGTH'])
+    
+    # Create a figure
+    plt.figure(figsize=(12, 6))
+    librosa.display.specshow(chroma_stft, y_axis='chroma', x_axis='time', sr=config['SAMPLE_RATE'], cmap='PuBu')
+    plt.colorbar()
+
+    # Create a legend for the axis and add a title
+    plt.title('Chroma Features (STFT)', fontsize=14)
+    plt.xlabel('Time (s)', fontsize=14)
+    plt.ylabel('Chroma', fontsize=14)
+
+    # Show the plot
+    plt.tight_layout()
+    plt.show()
+
+def plotMelSpectrogram(audioData:np.ndarray=None, sample_rate:int=None, n_mels:int=None, fmin:int=None, fmax=None) -> None:
     """
     # Description
         -> Plots a Mel-frequency spectrogram.
@@ -437,10 +499,23 @@ def plotMelSpectrogram(audio:np.ndarray, sample_rate:int, n_mels:int=128, fmin:i
     := param: n_mels - Number of Mel bands to generate.
     := param: fmin - Minimum frequency for the Mel filter bank.
     := param: fmax - Maximum frequency for the Mel filter bank.
+    := return: None, since we are only plotting the mel spectrogram.
     """
 
+    # Check if a audio time series was provided
+    if audioData is None:
+        raise ValueError("Missing a Audio Time Series!")
+    
+    # Check if a Sample Rate was givem
+    if sample_rate is None:
+        raise ValueError("Missing a Sample Rate!")
+    
+    # Setting default Values
+    n_mels = 128 if n_mels is None else n_mels
+    fmin = 0 if fmin is None else fmin
+
     # Compute the Mel spectrogram
-    mel_spectrogram = librosa.feature.melspectrogram(y=audio, sr=sample_rate, n_mels=n_mels, fmin=fmin, fmax=fmax)
+    mel_spectrogram = librosa.feature.melspectrogram(y=audioData, sr=sample_rate, n_mels=n_mels, fmin=fmin, fmax=fmax)
 
     # Convert to dB for visualization
     mel_spectrogram_db = librosa.power_to_db(mel_spectrogram, ref=np.max)
@@ -467,4 +542,39 @@ def plotMelSpectrogram(audio:np.ndarray, sample_rate:int, n_mels:int=128, fmin:i
     ax.spines['bottom'].set_linewidth(1.1)
 
     plt.tight_layout(pad=2.0)
+    plt.show()
+
+def plotSpectralContrast(audioData:np.ndarray=None, config:dict=None) -> None:
+    """
+    # Description
+        -> This function plots the audio's spectral contrast.
+    ---------------------------------------------------------
+    := param: audioData - Audio Time Series within a numpy array.
+    := param: config - Dictionary with important values used during audio processing tasks within the project.
+    := return: None, since we are simply plotting some data.
+    """
+    
+    # Check if a audio time series was provided
+    if audioData is None:
+        raise ValueError("Missing a Audio Time Series!")
+
+    # Check if a config was given
+    if config is None:
+        raise ValueError("Missing a configuration dictionary!")
+
+    # Compute the Spectral Contrast
+    spectralContrast = librosa.feature.spectral_contrast(y=audioData, sr=config['SAMPLE_RATE'])
+    
+    # Create a figure
+    plt.figure(figsize=(12, 6))
+    librosa.display.specshow(spectralContrast, x_axis='time', sr=config['SAMPLE_RATE'], cmap='PuBu')
+    plt.colorbar(label='Spectral Contrast (dB)')
+
+    # Create a legend for the axis and add a title
+    plt.title('Spectral Contrast', fontsize=14)
+    plt.xlabel('Time (s)', fontsize=14)
+    plt.ylabel('Frequency Bands', fontsize=14)
+
+    # Show the plot
+    plt.tight_layout()
     plt.show()
