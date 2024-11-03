@@ -2,9 +2,10 @@ import numpy as np
 import pandas as pd
 import os
 import librosa
+from sklearn.preprocessing import (MinMaxScaler)
 from .AudioManagement import (loadAudio)
 
-def extract1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
+def extractAll1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
     """
     # Description
         -> This function helps extract 1-Dimensional features 
@@ -17,7 +18,7 @@ def extract1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsC
     := return: None, since we are merely extracting data.
     """
 
-    # Check if the datframe has already been computed
+    # Check if the dataframe has already been computed
     if not os.path.exists(pathsConfig['Datasets'][f'Fold-{fold}']['1-Dimensional-Data']):
         # Initialize a List to store the extracted content
         data = []
@@ -47,9 +48,9 @@ def extract1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsC
         # Save the Dataframe
         df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['1-Dimensional-Data'], sep=',', index=False)
     else:
-        print(f"[Fold-{fold}] 1-Dimensional Features have already been Extracted!")
+        print(f"[Fold-{fold}] All the 1-Dimensional Features have already been Extracted!")
 
-def extract2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
+def extractAll2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
     """
     # Description
         -> This function helps extract 2-Dimensional features 
@@ -62,7 +63,7 @@ def extract2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsC
     := return: None, since we are merely extracting data.
     """
 
-    # Check if the datframe has already been computed
+    # Check if the dataframe has already been computed
     if not os.path.exists(pathsConfig['Datasets'][f'Fold-{fold}']['2-Dimensional-Data']):
         # Initialize a List to store the extracted content
         data = []
@@ -90,4 +91,93 @@ def extract2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsC
         # Save the Dataframe
         df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['2-Dimensional-Data'], sep=',', index=False)
     else:
-        print(f"[Fold-{fold}] 2-Dimensional Features have already been Extracted!")
+        print(f"[Fold-{fold}] All the 2-Dimensional Features have already been Extracted!")
+    
+def extractImportantFeatures(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
+    """
+    # Description
+        -> This function helps extract all the important features 
+        from the audio samples of the selected Fold on the dataset
+        as well as normalizing them and leaving them ready to be used.
+    ------------------------------------------------------------------
+    := param: audio_df - Pandas Dataframe with the UrbamSound8K dataset metadata.
+    := param: fold - Fold of the audios that we want to perform feature extraction on.
+    := param: config - Dictionary with Constants used in audio processing throughout the project.
+    := param: pathsConfig - Dictionary with filepaths to help organize the results of the project.
+    := return: None, since we are merely extracting data.
+    """
+
+    # Check if the dataframe has already been computed
+    if not os.path.exists(pathsConfig['Datasets'][f'Fold-{fold}']['Final-Features']):
+        # Initialize a List to store the extracted content
+        data = []
+
+        # Get the audio filenames from the selected fold
+        foldAudios = audio_df[audio_df['fold'] == fold]['slice_file_name'].to_numpy()
+
+        # Define a Min-Max Scaler
+        minMaxScaler = MinMaxScaler(feature_range=(0, 1))
+
+        # Iterate through all the audios inside the selected fold
+        for audioFileName in foldAudios:
+            # Load the Audio
+            audio = loadAudio(df_audio=audio_df, audioSliceName=audioFileName, audioDuration=config['DURATION'], targetSampleRate=config['SAMPLE_RATE'], usePadding=True)
+    
+            # Compute features
+
+            # 1D Features
+            zeroCrossingRateRaw = librosa.feature.zero_crossing_rate(y=audio)
+            zeroCrossingRate = minMaxScaler.fit_transform(zeroCrossingRateRaw)
+
+            spectralCentroidRaw = librosa.feature.spectral_centroid(y=audio, sr=config['SAMPLE_RATE'])
+            spectralCentroid = minMaxScaler.fit_transform(spectralCentroidRaw)
+
+            spectralBandwidthRaw = librosa.feature.spectral_bandwidth(y=audio, sr=config['SAMPLE_RATE'])
+            spectralBandwidth = minMaxScaler.fit_transform(spectralBandwidthRaw)
+
+            spectralFlatnessRaw = librosa.feature.spectral_flatness(y=audio)
+            spectralFlatness = minMaxScaler.fit_transform(spectralFlatnessRaw)
+
+            spectralRolloffRaw = librosa.feature.spectral_rolloff(y=audio, sr=config['SAMPLE_RATE'])
+            spectralRolloff = minMaxScaler.fit_transform(spectralRolloffRaw)
+
+            rmsEnergyRaw = librosa.feature.rms(y=audio)
+            rmsEnergy = minMaxScaler.fit_transform(rmsEnergyRaw)
+
+            # 2D Features
+            mfcc = librosa.feature.mfcc(y=audio, sr=config['SAMPLE_RATE'], n_mfcc=config['N_MFCC'])
+            chroma_stft = librosa.feature.chroma_stft(y=audio, n_chroma=config['N_CHROMA'], sr=config['SAMPLE_RATE'], n_fft=config['N_FFT'], hop_length=config['HOP_LENGTH'], win_length=config['WINDOW_LENGTH'])
+            melSpectrogram = librosa.feature.melspectrogram(y=audio, sr=config['SAMPLE_RATE'])
+            spectralContrast = librosa.feature.spectral_contrast(y=audio, sr=config['SAMPLE_RATE'])
+
+            # Append the extracted features to the data list
+            data.append({
+                # Audio Details
+                'audio':audioFileName,
+                'fold':fold,
+
+                # 1 Dimensional Features
+                'Zero-Crossing Rate': zeroCrossingRate,
+                'Spectral Centroid': spectralCentroid,
+                'Spectral Bandwidth':spectralBandwidth,
+                'Spectral Flatness':spectralFlatness,
+                'Spectral Roll-off':spectralRolloff,
+                'RMS Energy':rmsEnergy,
+
+                # 2 Dimensional Features
+                'MFCC':mfcc,
+                'Chroma STFT':chroma_stft,
+                'Mel Spectrogram':melSpectrogram,
+                'Spectral Contrast':spectralContrast,
+
+                # Target
+                'target':audio_df[audio_df['slice_file_name'] == audioFileName]['class'].to_numpy()[0]
+            })
+
+        # Create a DataFrame with the collected data
+        df = pd.DataFrame(data)
+
+        # Save the Dataframe
+        df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['Final-Features'], sep=',', index=False)
+    else:
+        print(f"[Fold-{fold}] Important Features have already been Extracted!")
