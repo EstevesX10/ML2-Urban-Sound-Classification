@@ -35,42 +35,52 @@ def loadPathsConfig() -> dict:
             'Fold-1': {
                 '1-Dimensional-Data':'./Datasets/Fold-1/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-1/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-1/Final-Features.csv'
             },
             'Fold-2': {
                 '1-Dimensional-Data':'./Datasets/Fold-2/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-2/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-2/Final-Features.csv'
             },
             'Fold-3': {
                 '1-Dimensional-Data':'./Datasets/Fold-3/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-3/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-3/Final-Features.csv'
             },
             'Fold-4': {
                 '1-Dimensional-Data':'./Datasets/Fold-4/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-4/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-4/Final-Features.csv'
             },
             'Fold-5': {
                 '1-Dimensional-Data':'./Datasets/Fold-5/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-5/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-5/Final-Features.csv'
             },
             'Fold-6': {
                 '1-Dimensional-Data':'./Datasets/Fold-6/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-6/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-6/Final-Features.csv'
             },
             'Fold-7': {
                 '1-Dimensional-Data':'./Datasets/Fold-7/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-7/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-7/Final-Features.csv'
             },
             'Fold-8': {
                 '1-Dimensional-Data':'./Datasets/Fold-8/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-8/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-8/Final-Features.csv'
             },
             'Fold-9': {
                 '1-Dimensional-Data':'./Datasets/Fold-9/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-9/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-9/Final-Features.csv'
             },
             'Fold-10': {
                 '1-Dimensional-Data':'./Datasets/Fold-10/1-Dimensional-Data.csv',
                 '2-Dimensional-Data':'./Datasets/Fold-10/2-Dimensional-Data.csv',
+                'Final-Features':'./Datasets/Fold-10/Final-Features.csv'
             },  
         },
         'ModelDevelopmentAndEvaluation': {
