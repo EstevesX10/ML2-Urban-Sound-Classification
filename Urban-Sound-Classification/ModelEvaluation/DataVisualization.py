@@ -4,31 +4,34 @@ import matplotlib.pyplot as plt
 from keras.src.callbacks.history import History
 import scikit_posthocs as sp
 
-
-def plotNetworkTrainingPerformance(history:History=None) -> None:
+def plotNetworkTrainingPerformance(trainHistory:History=None) -> None:
     """
     # Description
         -> This function helps visualize the network's performance 
         during training through it's variation on both loss and accuracy.
     ---------------------------------------------------------------------
-    := param: history - Network's training history data.
+    := param: trainHistory - Network's training history data.
     := return: None, since we are simply plotting data.
     """
 
+    # Check if a Network train history was passed on
+    if trainHistory is None:
+        raise ValueError("Missing the Training History Data of the Network!")
+
     # Create a figure with axis
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
 
     # Plot training & validation accuracy values
-    ax1.plot(history.history['accuracy'], label='Train Accuracy')
-    ax1.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    ax1.plot(trainHistory.history['accuracy'], label='Train Accuracy')
+    ax1.plot(trainHistory.history['val_accuracy'], label='Validation Accuracy')
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
     ax1.set_xlabel('Epoch')
     ax1.legend(loc='lower right')
 
     # Plot training & validation loss values
-    ax2.plot(history.history['loss'], label='Train Loss')
-    ax2.plot(history.history['val_loss'], label='Validation Loss')
+    ax2.plot(trainHistory.history['loss'], label='Train Loss')
+    ax2.plot(trainHistory.history['val_loss'], label='Validation Loss')
     ax2.set_title('Model Loss')
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
