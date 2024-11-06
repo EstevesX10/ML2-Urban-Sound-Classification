@@ -1,7 +1,42 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+from keras.src.callbacks.history import History
 import scikit_posthocs as sp
+
+
+def plotNetworkTrainingPerformance(history:History=None) -> None:
+    """
+    # Description
+        -> This function helps visualize the network's performance 
+        during training through it's variation on both loss and accuracy.
+    ---------------------------------------------------------------------
+    := param: history - Network's training history data.
+    := return: None, since we are simply plotting data.
+    """
+
+    # Create a figure with axis
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(18, 6))
+
+    # Plot training & validation accuracy values
+    ax1.plot(history.history['accuracy'], label='Train Accuracy')
+    ax1.plot(history.history['val_accuracy'], label='Validation Accuracy')
+    ax1.set_title('Model Accuracy')
+    ax1.set_ylabel('Accuracy')
+    ax1.set_xlabel('Epoch')
+    ax1.legend(loc='lower right')
+
+    # Plot training & validation loss values
+    ax2.plot(history.history['loss'], label='Train Loss')
+    ax2.plot(history.history['val_loss'], label='Validation Loss')
+    ax2.set_title('Model Loss')
+    ax2.set_ylabel('Loss')
+    ax2.set_xlabel('Epoch')
+    ax2.legend(loc='upper right')
+
+    plt.tight_layout()
+    plt.show()
+
 
 def plotCritialDifferenceDiagram(matrix:np.ndarray=None, colors:dict=None) -> None:
     """
