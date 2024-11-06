@@ -50,7 +50,7 @@ def extractMFCCs(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict)
         # Save the Dataframe
         df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['MFCCs-Feature'], sep=',', index=False)
     else:
-        print(f"[Fold-{fold}] MFCC's have already been Extracted!")
+        print(f"[Fold-{fold}]\tMFCC's have already been Extracted!")
 
 def extractAll1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
     """
@@ -73,11 +73,39 @@ def extractAll1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pat
         # Get the audio filenames from the selected fold
         foldAudios = audio_df[audio_df['fold'] == fold]['slice_file_name'].to_numpy()
 
+        # Define a Min-Max Scaler
+        minMaxScaler = MinMaxScaler(feature_range=(0, 1))
+
         # Iterate through all the audios inside the selected fold
         for audioFileName in foldAudios:
             # Load the Audio
             audio = loadAudio(df_audio=audio_df, audioSliceName=audioFileName, audioDuration=config['DURATION'], targetSampleRate=config['SAMPLE_RATE'], usePadding=True)
     
+            # [Compute Features]
+            # Zero Crossing Rate
+            zeroCrossingRateRaw = librosa.feature.zero_crossing_rate(y=audio)
+            zeroCrossingRate = minMaxScaler.fit_transform(zeroCrossingRateRaw)
+
+            # Spectral Centroid
+            spectralCentroidRaw = librosa.feature.spectral_centroid(y=audio, sr=config['SAMPLE_RATE'])
+            spectralCentroid = minMaxScaler.fit_transform(spectralCentroidRaw)
+
+            # Spectral Bandwidth
+            spectralBandwidthRaw = librosa.feature.spectral_bandwidth(y=audio, sr=config['SAMPLE_RATE'])
+            spectralBandwidth = minMaxScaler.fit_transform(spectralBandwidthRaw)
+
+            # Spectral Flatness
+            spectralFlatnessRaw = librosa.feature.spectral_flatness(y=audio)
+            spectralFlatness = minMaxScaler.fit_transform(spectralFlatnessRaw)
+
+            # Spectral Roll-off
+            spectralRolloffRaw = librosa.feature.spectral_rolloff(y=audio, sr=config['SAMPLE_RATE'])
+            spectralRolloff = minMaxScaler.fit_transform(spectralRolloffRaw)
+
+            # RMS Energy
+            rmsEnergyRaw = librosa.feature.rms(y=audio)
+            rmsEnergy = minMaxScaler.fit_transform(rmsEnergyRaw)
+
             # Compute and append the extracted features to the data list
             data.append({
                 # Audio Details
@@ -85,12 +113,12 @@ def extractAll1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pat
                 'fold':fold,
 
                 # 1-Dimensional Features
-                'Zero-Crossing Rate':librosa.feature.zero_crossing_rate(y=audio),
-                'Spectral Centroid':librosa.feature.spectral_centroid(y=audio, sr=config['SAMPLE_RATE']),
-                'Spectral Bandwidth':librosa.feature.spectral_bandwidth(y=audio, sr=config['SAMPLE_RATE']),
-                'Spectral Flatness':librosa.feature.spectral_flatness(y=audio),
-                'Spectral Roll-off':librosa.feature.spectral_rolloff(y=audio, sr=config['SAMPLE_RATE']),
-                'RMS Energy':librosa.feature.rms(y=audio),
+                'Zero-Crossing Rate':zeroCrossingRate,
+                'Spectral Centroid':spectralCentroid,
+                'Spectral Bandwidth':spectralBandwidth,
+                'Spectral Flatness':spectralFlatness,
+                'Spectral Roll-off':spectralRolloff,
+                'RMS Energy':rmsEnergy,
                 
                 # Target
                 'target':audio_df[audio_df['slice_file_name'] == audioFileName]['class'].to_numpy()[0]
@@ -102,7 +130,7 @@ def extractAll1DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pat
         # Save the Dataframe
         df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['1-Dimensional-Data'], sep=',', index=False)
     else:
-        print(f"[Fold-{fold}] All the 1-Dimensional Features have already been Extracted!")
+        print(f"[Fold-{fold}]\tAll the 1-Dimensional Features have already been Extracted!")
 
 def extractAll2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
     """
@@ -125,11 +153,32 @@ def extractAll2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pat
         # Get the audio filenames from the selected fold
         foldAudios = audio_df[audio_df['fold'] == fold]['slice_file_name'].to_numpy()
 
+        # Define a Min-Max Scaler
+        minMaxScaler = MinMaxScaler(feature_range=(0, 1))
+
         # Iterate through all the audios inside the selected fold
         for audioFileName in foldAudios:
             # Load the Audio
             audio = loadAudio(df_audio=audio_df, audioSliceName=audioFileName, audioDuration=config['DURATION'], targetSampleRate=config['SAMPLE_RATE'], usePadding=True)
     
+            # [Compute Features]
+            # MFCCs
+            mfccRaw = librosa.feature.mfcc(y=audio, sr=config['SAMPLE_RATE'], n_mfcc=config['N_MFCC'])
+            mfccAverage = np.mean(mfccRaw, axis=0).reshape(1, -1)
+            mfcc = minMaxScaler.fit_transform(mfccAverage)
+
+            # chroma_stft = librosa.feature.chroma_stft(y=audio, n_chroma=config['N_CHROMA'], sr=config['SAMPLE_RATE'], n_fft=config['N_FFT'], hop_length=config['HOP_LENGTH'], win_length=config['WINDOW_LENGTH'])
+            
+            # Mel Spectrogram
+            melSpectrogramRaw = librosa.feature.melspectrogram(y=audio, sr=config['SAMPLE_RATE'])
+            melSpectrogramAvg = np.mean(melSpectrogramRaw, axis=0).reshape(1, -1)
+            melSpectrogram = minMaxScaler.fit_transform(melSpectrogramAvg)
+
+            # Spectral Contrast
+            spectralContrastRaw = librosa.feature.spectral_contrast(y=audio, sr=config['SAMPLE_RATE'])
+            spectralContrastAvg = np.mean(spectralContrastRaw, axis=0).reshape(1, -1)
+            spectralContrast = minMaxScaler.fit_transform(spectralContrastAvg)
+
             # Compute and append the extracted features to the data list
             data.append({
                 # Audio Details
@@ -137,10 +186,10 @@ def extractAll2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pat
                 'fold':fold,
 
                 # 2-Dimensional Features
-                'MFCC':librosa.feature.mfcc(y=audio, sr=config['SAMPLE_RATE'], n_mfcc=config['N_MFCC']),
-                'Chroma STFT':librosa.feature.chroma_stft(y=audio, n_chroma=config['N_CHROMA'], sr=config['SAMPLE_RATE'], n_fft=config['N_FFT'], hop_length=config['HOP_LENGTH'], win_length=config['WINDOW_LENGTH']),
-                'Mel Spectrogram':librosa.feature.melspectrogram(y=audio, sr=config['SAMPLE_RATE']),
-                'Spectral Contrast':librosa.feature.spectral_contrast(y=audio, sr=config['SAMPLE_RATE']),
+                'MFCC':mfcc,
+                # 'Chroma STFT':None,
+                'Mel Spectrogram':melSpectrogram,
+                'Spectral Contrast':spectralContrast,
 
                 # Target
                 'target':audio_df[audio_df['slice_file_name'] == audioFileName]['class'].to_numpy()[0]
@@ -152,7 +201,7 @@ def extractAll2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pat
         # Save the Dataframe
         df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['2-Dimensional-Data'], sep=',', index=False)
     else:
-        print(f"[Fold-{fold}] All the 2-Dimensional Features have already been Extracted!")
+        print(f"[Fold-{fold}]\tAll the 2-Dimensional Features have already been Extracted!")
 
 
 # [TODO] FINISH THE FUNCTION BELLOW TO INCLUDE ALL THE FEATURES WE WANT TO USE
@@ -188,30 +237,49 @@ def extractImportantFeatures(audio_df:pd.DataFrame, fold:int, config:dict, paths
     
             # Compute features
 
-            # 1D Features
+            # [1D Features]
+            # Zero Crossing Rate
             zeroCrossingRateRaw = librosa.feature.zero_crossing_rate(y=audio)
             zeroCrossingRate = minMaxScaler.fit_transform(zeroCrossingRateRaw)
 
+            # Spectral Centroid
             spectralCentroidRaw = librosa.feature.spectral_centroid(y=audio, sr=config['SAMPLE_RATE'])
             spectralCentroid = minMaxScaler.fit_transform(spectralCentroidRaw)
 
+            # Spectral Bandwidth
             spectralBandwidthRaw = librosa.feature.spectral_bandwidth(y=audio, sr=config['SAMPLE_RATE'])
             spectralBandwidth = minMaxScaler.fit_transform(spectralBandwidthRaw)
 
+            # Spectral Flatness
             spectralFlatnessRaw = librosa.feature.spectral_flatness(y=audio)
             spectralFlatness = minMaxScaler.fit_transform(spectralFlatnessRaw)
 
+            # Spectral Roll-off
             spectralRolloffRaw = librosa.feature.spectral_rolloff(y=audio, sr=config['SAMPLE_RATE'])
             spectralRolloff = minMaxScaler.fit_transform(spectralRolloffRaw)
 
+            # RMS Energy
             rmsEnergyRaw = librosa.feature.rms(y=audio)
             rmsEnergy = minMaxScaler.fit_transform(rmsEnergyRaw)
 
-            # 2D Features
-            mfcc = librosa.feature.mfcc(y=audio, sr=config['SAMPLE_RATE'], n_mfcc=config['N_MFCC'])
-            chroma_stft = librosa.feature.chroma_stft(y=audio, n_chroma=config['N_CHROMA'], sr=config['SAMPLE_RATE'], n_fft=config['N_FFT'], hop_length=config['HOP_LENGTH'], win_length=config['WINDOW_LENGTH'])
-            melSpectrogram = librosa.feature.melspectrogram(y=audio, sr=config['SAMPLE_RATE'])
-            spectralContrast = librosa.feature.spectral_contrast(y=audio, sr=config['SAMPLE_RATE'])
+            # [2D Features]
+
+            # MFCCs
+            mfccRaw = librosa.feature.mfcc(y=audio, sr=config['SAMPLE_RATE'], n_mfcc=config['N_MFCC'])
+            mfccAverage = np.mean(mfccRaw, axis=0).reshape(1, -1)
+            mfcc = minMaxScaler.fit_transform(mfccAverage)
+
+            # chroma_stft = librosa.feature.chroma_stft(y=audio, n_chroma=config['N_CHROMA'], sr=config['SAMPLE_RATE'], n_fft=config['N_FFT'], hop_length=config['HOP_LENGTH'], win_length=config['WINDOW_LENGTH'])
+            
+            # Mel Spectrogram
+            melSpectrogramRaw = librosa.feature.melspectrogram(y=audio, sr=config['SAMPLE_RATE'])
+            melSpectrogramAvg = np.mean(melSpectrogramRaw, axis=0).reshape(1, -1)
+            melSpectrogram = minMaxScaler.fit_transform(melSpectrogramAvg)
+
+            # Spectral Contrast
+            spectralContrastRaw = librosa.feature.spectral_contrast(y=audio, sr=config['SAMPLE_RATE'])
+            spectralContrastAvg = np.mean(spectralContrastRaw, axis=0).reshape(1, -1)
+            spectralContrast = minMaxScaler.fit_transform(spectralContrastAvg)
 
             # Append the extracted features to the data list
             data.append({
@@ -229,7 +297,7 @@ def extractImportantFeatures(audio_df:pd.DataFrame, fold:int, config:dict, paths
 
                 # 2 Dimensional Features
                 'MFCC':mfcc,
-                'Chroma STFT':chroma_stft,
+                # 'Chroma STFT':chroma_stft,
                 'Mel Spectrogram':melSpectrogram,
                 'Spectral Contrast':spectralContrast,
 
@@ -243,4 +311,4 @@ def extractImportantFeatures(audio_df:pd.DataFrame, fold:int, config:dict, paths
         # Save the Dataframe
         df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['Final-Features'], sep=',', index=False)
     else:
-        print(f"[Fold-{fold}] Important Features have already been Extracted!")
+        print(f"[Fold-{fold}]\tImportant Features have already been Extracted!")
