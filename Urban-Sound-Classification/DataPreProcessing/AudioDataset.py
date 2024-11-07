@@ -1,3 +1,4 @@
+from typing import (Tuple)
 import numpy as np
 import pandas as pd
 import os
@@ -8,13 +9,22 @@ from sklearn.preprocessing import (LabelEncoder)
 
 class AudioDataset():
     def __init__(self, fold:int=None, intervalStep:int=None, pathsConfig:dict=None) -> None:
-        
+        """
+        # Description 
+            -> Constructor that helps define new instances of the Class AudioDataset.
+        ------------------------------------------------------------------------------------
+        := param: fold - Fold of the UrbanSound8k dataset to use to perform a post processing of the a audio's raw data.
+        := param: intervalStep - Interval considered to segment and process the audio's raw features (previously extracted).
+        := param: pathsConfig - Dictionary used to store the paths to important files used throughout the project.
+        := return: None, since we are only instanciating a class.
+        """
+
         # Check if the fold was passed on
         if fold is None:
             raise ValueError("Missing the Dataset's fold!")
         
         # Check if the fold is valid
-        if (fold < 0 or fold > 10):
+        if (fold < 1 or fold > 10):
             raise ValueError("Invalid Fold!")
 
         # Verify if the paths configuration was given
@@ -145,7 +155,7 @@ class AudioDataset():
     def createPartition(self) -> None:
         """
         # Description
-            -> This method ensures a separation between the dataset features and 
+            -> This method ensures a separation between the dataset's fold features and 
             target labels alongside a proper label encoding and data partitioning.
         --------------------------------------------------------------------------
         := return: None, since we are only updating one attribute of the class.
@@ -168,3 +178,74 @@ class AudioDataset():
         self.train_indices, self.test_indices = train_test_split(indices, stratify=self.y, random_state=0)
         self.trainX, self.trainY = self.x[self.train_indices], self.y[self.train_indices]
         self.testX, self.testY = self.x[self.test_indices], self.y[self.test_indices]
+
+class UrbanSound8kManager():
+    def __init__(self, intervalStep:int=None, pathsConfig:dict=None) -> None:
+        """
+        # Description 
+            -> Constructor that helps define new instances of the Class UrbanSound8kManager.
+        ------------------------------------------------------------------------------------
+        := param: intervalStep - Interval considered to segment and process the audio's raw features (previously extracted).
+        := param: pathsConfig - Dictionary used to store the paths to important files used throughout the project.
+        := return: None, since we are only instanciating a class.
+        """
+        
+        # Check if a paths configuration was given
+        if pathsConfig is None:
+            raise ValueError("Missing a Dictionary with the Paths Configuration!")
+
+        # Set a Default value to intervalStep
+        intervalStep = 5 if intervalStep is None else intervalStep
+
+        # Compute the Audio data across all folds using the AudioDataset Class
+        self.folds = [None] + [AudioDataset(fold=i, intervalStep=intervalStep, pathsConfig=pathsConfig) for i in range(1, 11)]
+
+    def getTrainTestSplitFold(self, testFold:int=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+        """
+        # Description
+            -> This method allows to obtain the UrbanSound8k's overall train and test
+            sets across all folds considering the one selected as the test fold.
+        ---------------------------------------------------------------------------------------------------------------------
+        := param: testFold - Dataset's Fold whose data is to be used for testing. [NOTE] testFold must be in [1, 2, ..., 10].
+        := return: The train and test sets to be used to perform one of the 10-Fold Cross Validation
+        """
+
+        # Check if the testFold is given
+        if testFold is None:
+            raise ValueError("Missing the number of the Test Fold!")
+
+        # Verify the integrity of the test fold selected
+        if testFold < 1 or testFold > 10:
+            raise ValueError("Invalid Test Fold!") 
+
+        # Define a set for the visited folds
+        visitedFolds = set()
+        
+        # Get the test sets
+        testX = self.folds[testFold].x
+        testY = self.folds[testFold].y
+
+        # If our test fold is the first, then we consider the 2nd fold's data as the beggining of our train sets
+        if testFold == 1:
+            trainX = self.folds[2].x
+            trainY = self.folds[2].y
+            visitedFolds.add(2)
+        # Otherwise, we can start with the first fold data to begin the train set
+        else:
+            trainX = self.folds[1].x
+            trainY = self.folds[1].y
+            visitedFolds.add(1)
+
+        # Iterate through eachn fold
+        for currentFold in range(1, 11):
+            # Ignore if the fold corresponds to test or if it has already been visited
+            if currentFold == testFold or currentFold in visitedFolds:
+                continue
+            # Update the train sets with the current fold's training data
+            else:
+                trainX = np.concatenate((trainX, self.folds[currentFold].x), axis=0)
+                trainY = np.concatenate((trainY, self.folds[currentFold].y), axis=0)
+        
+        # Return the final train and test sets
+        return trainX, trainY, testX, testY
+
