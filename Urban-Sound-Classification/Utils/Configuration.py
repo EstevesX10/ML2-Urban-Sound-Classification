@@ -34,63 +34,53 @@ def loadPathsConfig() -> dict:
         'Datasets': {
             'Fold-1': {
                 'MFCCs-Feature':'./Datasets/Fold-1/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-1/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-1/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-1/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-1/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-1/Processed-Features.csv'
             },
             'Fold-2': {
                 'MFCCs-Feature':'./Datasets/Fold-2/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-2/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-2/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-2/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-2/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-2/Processed-Features.csv'
             },
             'Fold-3': {
                 'MFCCs-Feature':'./Datasets/Fold-3/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-3/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-3/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-3/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-3/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-3/Processed-Features.csv'
             },
             'Fold-4': {
                 'MFCCs-Feature':'./Datasets/Fold-4/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-4/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-4/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-4/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-4/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-4/Processed-Features.csv'
             },
             'Fold-5': {
                 'MFCCs-Feature':'./Datasets/Fold-5/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-5/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-5/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-5/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-5/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-5/Processed-Features.csv'
             },
             'Fold-6': {
                 'MFCCs-Feature':'./Datasets/Fold-6/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-6/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-6/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-6/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-6/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-6/Processed-Features.csv'
             },
             'Fold-7': {
                 'MFCCs-Feature':'./Datasets/Fold-7/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-7/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-7/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-7/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-7/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-7/Processed-Features.csv'
             },
             'Fold-8': {
                 'MFCCs-Feature':'./Datasets/Fold-8/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-8/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-8/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-8/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-8/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-8/Processed-Features.csv'
             },
             'Fold-9': {
                 'MFCCs-Feature':'./Datasets/Fold-9/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-9/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-9/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-9/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-9/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-9/Processed-Features.csv'
             },
             'Fold-10': {
                 'MFCCs-Feature':'./Datasets/Fold-10/MFCCs-Feature.csv',
-                '1-Dimensional-Data':'./Datasets/Fold-10/1-Dimensional-Data.csv',
-                '2-Dimensional-Data':'./Datasets/Fold-10/2-Dimensional-Data.csv',
-                'Final-Features':'./Datasets/Fold-10/Final-Features.csv'
+                'Total-Features':'./Datasets/Fold-10/Total-Features.csv',
+                'Processed-Features':'./Datasets/Fold-10/Processed-Features.csv'
             },  
         },
         'ModelDevelopmentAndEvaluation': {

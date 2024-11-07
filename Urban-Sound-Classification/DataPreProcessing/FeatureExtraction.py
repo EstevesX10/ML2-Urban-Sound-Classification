@@ -193,8 +193,6 @@ def extractAll2DimensionalData(audio_df:pd.DataFrame, fold:int, config:dict, pat
     else:
         print(f"[Fold-{fold}]\tAll the 2-Dimensional Features have already been Extracted!")
 
-
-# [TODO] FINISH THE FUNCTION BELLOW TO INCLUDE ALL THE FEATURES WE WANT TO USE
 def extractImportantFeatures(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
     """
     # Description
@@ -210,7 +208,7 @@ def extractImportantFeatures(audio_df:pd.DataFrame, fold:int, config:dict, paths
     """
 
     # Check if the dataframe has already been computed
-    if not os.path.exists(pathsConfig['Datasets'][f'Fold-{fold}']['Final-Features']):
+    if not os.path.exists(pathsConfig['Datasets'][f'Fold-{fold}']['Total-Features']):
         # Initialize a List to store the extracted content
         data = []
 
@@ -289,6 +287,6 @@ def extractImportantFeatures(audio_df:pd.DataFrame, fold:int, config:dict, paths
         df = pd.DataFrame(data)
 
         # Save the Dataframe
-        df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['Final-Features'], sep=',', index=False)
+        df.to_csv(pathsConfig['Datasets'][f'Fold-{fold}']['Total-Features'], sep=',', index=False)
     else:
         print(f"[Fold-{fold}]\tImportant Features have already been Extracted!")
