@@ -30,6 +30,7 @@ class ResidualBlock(Layer):
             self.skip_connection = lambda x, training: x
 
         self.add = Add()
+        self.relu2 = ReLU()
 
     def call(self, x:tf.Tensor, training=False):
         # Save x for the skip connection
@@ -44,8 +45,8 @@ class ResidualBlock(Layer):
         x = self.bn2(x)
 
         # Converge the result from the previous layers to the initial residue
-        x = Add([x, residue])
-        x = ReLU(x)
+        x = self.add([x, residue])
+        x = self.relu2(x)
 
         return x
 
