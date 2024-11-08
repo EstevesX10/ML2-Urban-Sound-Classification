@@ -46,6 +46,8 @@ class AudioDataset():
         # Load the dataset with the raw features and select the important columnhs
         self.df = pd.read_csv(pathsConfig['Datasets'][f'Fold-{fold}']['Total-Features'])
         self.cols = self.df.columns[2:len(self.df.columns) - 2]
+        self.oneDimensionalFeatures = self.df.columns[2:len(self.df.columns) - 2 - 3]
+        self.twoDimensionalFeatures = self.df.columns[len(self.df.columns) - 2 - 3 : len(self.df.columns) - 2]
         
         # Create a attribute for the processed dataframe
         self.processed_df = None
@@ -107,13 +109,16 @@ class AudioDataset():
                 # Create a new dictionary for a new line in the Dataframe
                 audioSampleData = {}
 
-                # Iterate through the features
-                for featureIdx, feature in enumerate(self.cols):
+                # Create a featureIdx to keep track of the current feature being analysed
+                featureIdx = 0
+
+                # Iterate through the 1-Dimensional Features
+                for feature in self.oneDimensionalFeatures:
 
                     # Fetch and Convert the array in the current cell
                     featureArray = np.array(ast.literal_eval(row[feature]))
 
-                    # Create the components
+                    # Create the components for the 1-Dimensional Data
                     for currentComponent in range(1, columnDetails[featureIdx]['totalComponents'] + 1):
                         if currentComponent == columnDetails[featureIdx]['totalComponents'] - 1: 
                             audioSampleData.update({
@@ -127,6 +132,25 @@ class AudioDataset():
                                 f"{columnDetails[featureIdx]['feature']}_{currentComponent}_Median":np.median(featureArray[(currentComponent - 1)*self.step:currentComponent*self.step]),
                                 f"{columnDetails[featureIdx]['feature']}_{currentComponent}_Std":np.std(featureArray[(currentComponent - 1)*self.step:currentComponent*self.step])
                             })
+                    
+                    # Increment the index of the feature being processed
+                    featureIdx += 1
+
+                # Iterate through the 2-Dimensional Features
+                for feature in self.twoDimensionalFeatures:
+
+                    # Fetch and Convert the array in the current cell
+                    featureArray = np.array(ast.literal_eval(row[feature]))
+
+                    # Update the audio Sample Data with all the components previously calculated during feature extraction
+                    # Since we already
+                    for componentIdx, component in enumerate(featureArray):
+                        audioSampleData.update({
+                            f"{columnDetails[featureIdx]['feature']}_{componentIdx}":component
+                        })
+                    
+                    # Increment the index of the feature being processed
+                    featureIdx += 1
 
                 # Add the target Label
                 audioSampleData.update({
