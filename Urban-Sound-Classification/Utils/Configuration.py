@@ -33,53 +33,63 @@ def loadPathsConfig() -> dict:
         'ExploratoryDataAnalysis': './ExperimentalResults/ExploratoryDataAnalysis',
         'Datasets': {
             'Fold-1': {
-                'MFCCs-Feature':'./Datasets/Fold-1/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-1/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-1/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-1/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-1/Processed-Features.csv'
             },
             'Fold-2': {
-                'MFCCs-Feature':'./Datasets/Fold-2/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-2/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-2/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-2/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-2/Processed-Features.csv'
             },
             'Fold-3': {
-                'MFCCs-Feature':'./Datasets/Fold-3/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-3/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-3/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-3/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-3/Processed-Features.csv'
             },
             'Fold-4': {
-                'MFCCs-Feature':'./Datasets/Fold-4/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-4/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-4/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-4/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-4/Processed-Features.csv'
             },
             'Fold-5': {
-                'MFCCs-Feature':'./Datasets/Fold-5/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-5/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-5/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-5/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-5/Processed-Features.csv'
             },
             'Fold-6': {
-                'MFCCs-Feature':'./Datasets/Fold-6/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-6/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-6/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-6/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-6/Processed-Features.csv'
             },
             'Fold-7': {
-                'MFCCs-Feature':'./Datasets/Fold-7/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-7/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-7/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-7/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-7/Processed-Features.csv'
             },
             'Fold-8': {
-                'MFCCs-Feature':'./Datasets/Fold-8/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-8/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-8/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-8/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-8/Processed-Features.csv'
             },
             'Fold-9': {
-                'MFCCs-Feature':'./Datasets/Fold-9/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-9/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-9/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-9/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-9/Processed-Features.csv'
             },
             'Fold-10': {
-                'MFCCs-Feature':'./Datasets/Fold-10/MFCCs-Feature.csv',
                 'Total-Features':'./Datasets/Fold-10/Total-Features.csv',
+                'Raw-MFCCs-Feature':'./Datasets/Fold-10/Raw-MFCCs-Feature.csv',
+                'Processed-MFCCs-Feature':'./Datasets/Fold-10/Processed-MFCCs-Feature.csv',
                 'Processed-Features':'./Datasets/Fold-10/Processed-Features.csv'
             },  
         },
