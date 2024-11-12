@@ -52,7 +52,7 @@ class NetworkPipeline():
         # Create a Pipeline
         self.pipeline = Pipeline([
             ('scaler', StandardScaler()),   # Feature scaling
-            ('model', self.classifier)      # TensorFlow model
+            ('classifier', self.classifier)      # TensorFlow model
         ])
 
     def performCV(self, dataset:AudioDataset):
@@ -60,8 +60,8 @@ class NetworkPipeline():
         split = PredefinedSplit(dataset.df.iloc[dataset.train_indices]["fold"])
 
         # Perform Cross Validation
-        cv_results = cross_validate(self.pipeline, dataset.trainX, dataset.trainY, cv=split)
+        cv_results = cross_validate(self.pipeline, dataset.trainX, dataset.trainY, cv=split, n_jobs=-1)
         # history = pipeline.fit(trainX, trainY)
-        history = cv_results.best_estimator_.named_steps["model"].history_
+        history = cv_results.best_estimator_.named_steps["classifier"].history_
 
         return history
