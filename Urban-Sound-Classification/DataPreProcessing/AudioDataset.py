@@ -129,25 +129,55 @@ class UrbanSound8kManager():
         train_df = pd.concat([train_df.drop(columns=['target']), pd.DataFrame(trainBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
         test_df = pd.concat([test_df.drop(columns=['target']), pd.DataFrame(testBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
         
-        # Define the columns of the features and the target
-        featuresCols = train_df.columns[1:len(train_df.columns) - numClasses]
-        targetCols = train_df.columns[-numClasses:]
+        # Evaluate the kind of data dimensionality provided and adapt the method to it
+        if self.dataDimensionality == '1D':
+            # Define the columns of the features and the target
+            featuresCols = train_df.columns[1:len(train_df.columns) - numClasses]
+            targetCols = train_df.columns[-numClasses:]
 
-        # Normalize the data
-        standardScaler = StandardScaler()
+            # Normalize the data
+            standardScaler = StandardScaler()
 
-        # Fit the scaler and transform the training data
-        train_df[featuresCols] = standardScaler.fit_transform(train_df[featuresCols])
+            # Fit the scaler and transform the training data
+            train_df[featuresCols] = standardScaler.fit_transform(train_df[featuresCols])
 
-        # Transform the test set according to the trained scaler
-        test_df[featuresCols] = standardScaler.transform(test_df[featuresCols])
+            # Transform the test set according to the trained scaler
+            test_df[featuresCols] = standardScaler.transform(test_df[featuresCols])
 
-        # Split the data into X and y for both train and test sets
-        X_train = train_df[featuresCols].to_numpy()
-        y_train = train_df[targetCols].to_numpy()
+            # Split the data into X and y for both train and test sets
+            X_train = train_df[featuresCols].to_numpy()
+            y_train = train_df[targetCols].to_numpy()
 
-        X_test = test_df[featuresCols].to_numpy()
-        y_test = test_df[targetCols].to_numpy()
+            X_test = test_df[featuresCols].to_numpy()
+            y_test = test_df[targetCols].to_numpy()
+        
+        elif self.dataDimensionality == '2D':
+            # Define the columns of the features and the target
+            featuresCols = 'MFCC'
+            targetCols = train_df.columns[-numClasses:]
+        
+            # Split the data into X and y for both train and test sets
+            X_train_ = train_df[featuresCols]
+            y_train = train_df[targetCols].to_numpy()
+
+            X_test_ = test_df[featuresCols]
+            y_test = test_df[targetCols].to_numpy()
+
+            # [NOTE] THE RESHAPING TAKES TOO LONG
+            # Adjust shapes
+            X_train = np.expand_dims(X_train_[0], axis=0)
+            X_test = np.expand_dims(X_test_[0], axis=0)
+
+            for sample in X_train_[1:]:
+                sample = np.expand_dims(sample, axis=0)
+                X_train = np.vstack((X_train, sample))
+
+            for sample in X_test_[1:]:
+                sample = np.expand_dims(sample, axis=0)
+                X_test = np.vstack((X_test, sample))
+
+        else:
+            raise ValueError("[SOMETHING WENT WRONG] Invalid Data Dimensionality Selected!")
 
         # Return the sets computed
         return X_train, y_train, X_test, y_test
