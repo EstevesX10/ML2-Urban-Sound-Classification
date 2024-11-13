@@ -40,7 +40,7 @@ def loadPathsConfig() -> dict:
                 "Raw-MFCCs-Feature": "./Datasets/Fold-1/Raw-MFCCs-Feature.pkl",
                 "Processed-MFCCs-Feature": "./Datasets/Fold-1/Processed-MFCCs-Feature.pkl",
 
-                # Files to store 1-Dimensional Features
+                # Files to store 1-Dimensional Features [Includes 2-Dimensional Data Transformed into 1D by performing mean by coefs]
                 "Extracted-1D-Features": "./Datasets/Fold-1/Extracted-1D-Features.pkl",
                 "Processed-1D-Features": "./Datasets/Fold-1/Processed-1D-Features.pkl",
             },
