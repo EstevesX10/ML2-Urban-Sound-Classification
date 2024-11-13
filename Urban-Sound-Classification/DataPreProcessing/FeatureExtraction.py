@@ -320,7 +320,7 @@ def process1DFeatures(fold:int, intervalStep:int, pathsConfig:dict) -> None:
         # Iterate row by row and process each extracted vector to get mean, std, ... to obtain multiple columns [MEAN_F1, STD_F1, MEAN_F2, STD_F2, ...]
         for index, row in df.iterrows():
             # Create a new dictionary for a new line in the Dataframe
-            audioSampleData = {}
+            audioSampleData = {'fold':fold}
 
             # Create a featureIdx to keep track of the current feature being analysed
             featureIdx = 0
