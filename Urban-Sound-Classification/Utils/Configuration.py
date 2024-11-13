@@ -22,76 +22,90 @@ def loadConfig() -> dict:
         "N_MFCC": 13,  # Number of Mel-Frequency Cepstral Coefficients (MFCCs) to be extracted
     }
 
-
 def loadPathsConfig() -> dict:
     """
     # Description
         -> This function aims to store all the path configuration related parameters used inside the project.
-    ----------------------------------------------------------------------------------------------------
+    ---------------------------------------------------------------------------------------------------------
     := return: Dictionary with some of the important file paths of the project.
     """
     return {
         "ExploratoryDataAnalysis": "./ExperimentalResults/ExploratoryDataAnalysis",
         "Datasets": {
             "Fold-1": {
-                "Total-Features": "./Datasets/Fold-1/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-1/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-1/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-1/Processed-Features.csv",
+                # All the Available Features to process Audio Samples
+                "Total-Features": "./Datasets/Fold-1/Total-Features.pkl",
+
+                # Files to store the MFCCs 
+                "Raw-MFCCs-Feature": "./Datasets/Fold-1/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-1/Processed-MFCCs-Feature.pkl",
+
+                # Files to store 1-Dimensional Features
+                "Extracted-1D-Features": "./Datasets/Fold-1/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-1/Processed-1D-Features.pkl",
             },
             "Fold-2": {
-                "Total-Features": "./Datasets/Fold-2/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-2/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-2/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-2/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-2/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-2/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-2/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-2/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-2/Processed-1D-Features.pkl",
             },
             "Fold-3": {
-                "Total-Features": "./Datasets/Fold-3/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-3/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-3/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-3/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-3/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-3/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-3/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-3/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-3/Processed-1D-Features.pkl",
             },
             "Fold-4": {
-                "Total-Features": "./Datasets/Fold-4/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-4/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-4/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-4/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-4/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-4/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-4/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-4/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-4/Processed-1D-Features.pkl",
             },
             "Fold-5": {
-                "Total-Features": "./Datasets/Fold-5/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-5/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-5/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-5/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-5/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-5/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-5/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-5/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-5/Processed-1D-Features.pkl",
             },
             "Fold-6": {
-                "Total-Features": "./Datasets/Fold-6/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-6/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-6/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-6/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-6/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-6/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-6/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-6/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-6/Processed-1D-Features.pkl",
             },
             "Fold-7": {
-                "Total-Features": "./Datasets/Fold-7/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-7/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-7/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-7/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-7/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-7/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-7/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-7/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-7/Processed-1D-Features.pkl",
             },
             "Fold-8": {
-                "Total-Features": "./Datasets/Fold-8/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-8/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-8/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-8/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-8/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-8/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-8/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-8/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-8/Processed-1D-Features.pkl",
             },
             "Fold-9": {
-                "Total-Features": "./Datasets/Fold-9/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-9/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-9/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-9/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-9/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-9/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-9/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-9/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-9/Processed-1D-Features.pkl",
             },
             "Fold-10": {
-                "Total-Features": "./Datasets/Fold-10/Total-Features.csv",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-10/Raw-MFCCs-Feature.csv",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-10/Processed-MFCCs-Feature.csv",
-                "Processed-Features": "./Datasets/Fold-10/Processed-Features.csv",
+                "Total-Features": "./Datasets/Fold-10/Total-Features.pkl",
+                "Raw-MFCCs-Feature": "./Datasets/Fold-10/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-10/Processed-MFCCs-Feature.pkl",
+                "Extracted-1D-Features": "./Datasets/Fold-10/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-10/Processed-1D-Features.pkl",
             },
         },
         "ModelDevelopmentAndEvaluation": {
