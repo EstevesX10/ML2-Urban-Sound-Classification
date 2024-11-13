@@ -1,36 +1,34 @@
 from typing import (Tuple)
 import numpy as np
 import pandas as pd
-import os
-import ast
 from keras.src.utils import (to_categorical)
 from sklearn.model_selection import (train_test_split)
-from sklearn.preprocessing import (LabelEncoder, LabelBinarizer)
+from sklearn.preprocessing import (LabelEncoder, LabelBinarizer, StandardScaler)
 
 """
-        # 1D
-        # Process the features and target into Arrays
-        self.x = processed1D_df[processed1D_df.columns[:-1]].to_numpy()
-        self.y = processed1D_df['target']
+# 1D
+# Process the features and target into Arrays
+self.x = processed1D_df[processed1D_df.columns[:-1]].to_numpy()
+self.y = processed1D_df['target']
 
 
-        # 2D 
-        # Get the Raw MFCCs
-        rawMFCCs = pd.read_pickle(self.pathsConfig['Datasets'][f'Fold-{self.fold}']['Raw-MFCCs-Feature'])        
+# 2D 
+# Get the Raw MFCCs
+rawMFCCs = pd.read_pickle(self.pathsConfig['Datasets'][f'Fold-{self.fold}']['Raw-MFCCs-Feature'])        
 
-        # Compute features
-        aux = rawMFCCs['MFCC'].to_numpy()
-        # print(np.array(aux[0]).shape, type(aux[0]))
-        
-        self.x = np.expand_dims(aux[0], axis=0)
-        
-        for sample in aux[1:]:
-            sample = np.expand_dims(sample, axis=0)
-            self.x = np.vstack((self.x, sample))
+# Compute features
+aux = rawMFCCs['MFCC'].to_numpy()
+# print(np.array(aux[0]).shape, type(aux[0]))
 
-        # Save the target labels
-        self.y = rawMFCCs['target']
-        """
+self.x = np.expand_dims(aux[0], axis=0)
+
+for sample in aux[1:]:
+    sample = np.expand_dims(sample, axis=0)
+    self.x = np.vstack((self.x, sample))
+
+# Save the target labels
+self.y = rawMFCCs['target']
+"""
 
 class UrbanSound8kManager():
     def __init__(self, dataDimensionality:str=None, pathsConfig:dict=None) -> None:
@@ -111,6 +109,9 @@ class UrbanSound8kManager():
         # Manage data from all the collected DataFrames
         df = self.manageData()
 
+        # Calculate the amount of unique target labels
+        numClasses = np.unique(df['target']).size
+
         # Separate the data into train and test
         train_df = df.loc[df['fold'] != testFold]
         test_df = df.loc[df['fold'] == testFold]
@@ -118,8 +119,6 @@ class UrbanSound8kManager():
         # Reset indexes
         train_df = train_df.reset_index(drop=True)
         test_df = test_df.reset_index(drop=True)
-
-        # return train_df, test_df
 
         # Binarize target column on the train set and transform the one on the test set
         labelBinarizer = LabelBinarizer()
@@ -130,41 +129,25 @@ class UrbanSound8kManager():
         train_df = pd.concat([train_df.drop(columns=['target']), pd.DataFrame(trainBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
         test_df = pd.concat([test_df.drop(columns=['target']), pd.DataFrame(testBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
         
-        return train_df, test_df
+        # Define the columns of the features and the target
+        featuresCols = train_df.columns[1:len(train_df.columns) - numClasses]
+        targetCols = train_df.columns[-numClasses:]
 
-        # Convert the binary target output into a DataFrame
-        binary_df = pd.DataFrame(binaryTarget, columns=labelBinarizer.classes_)
-        
-        df = pd.concat([df.drop(columns='')])
+        # Normalize the data
+        standardScaler = StandardScaler()
 
-        # Define a set for the visited folds
-        # visitedFolds = set()
-        
-        # # Get the test sets
-        # testX = self.folds[testFold].x
-        # testY = self.folds[testFold].y
+        # Fit the scaler and transform the training data
+        train_df[featuresCols] = standardScaler.fit_transform(train_df[featuresCols])
 
-        # # If our test fold is the first, then we consider the 2nd fold's data as the beggining of our train sets
-        # if testFold == 1:
-        #     trainX = self.folds[2].x
-        #     trainY = self.folds[2].y
-        #     visitedFolds.add(2)
-        # # Otherwise, we can start with the first fold data to begin the train set
-        # else:
-        #     trainX = self.folds[1].x
-        #     trainY = self.folds[1].y
-        #     visitedFolds.add(1)
+        # Transform the test set according to the trained scaler
+        test_df[featuresCols] = standardScaler.transform(test_df[featuresCols])
 
-        # # Iterate through eachn fold
-        # for currentFold in range(1, 3):
-        #     # Ignore if the fold corresponds to test or if it has already been visited
-        #     if currentFold == testFold or currentFold in visitedFolds:
-        #         continue
-        #     # Update the train sets with the current fold's training data
-        #     else:
-        #         trainX = np.concatenate((trainX, self.folds[currentFold].x), axis=0)
-        #         trainY = np.concatenate((trainY, self.folds[currentFold].y), axis=0)
-        
-        # # Return the final train and test sets
-        # return trainX, trainY, testX, testY
+        # Split the data into X and y for both train and test sets
+        X_train = train_df[featuresCols].to_numpy()
+        y_train = train_df[targetCols].to_numpy()
 
+        X_test = test_df[featuresCols].to_numpy()
+        y_test = test_df[targetCols].to_numpy()
+
+        # Return the sets computed
+        return X_train, y_train, X_test, y_test
