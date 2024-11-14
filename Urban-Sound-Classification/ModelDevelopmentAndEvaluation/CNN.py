@@ -3,7 +3,7 @@ import pandas as pd
 import tensorflow as tf
 import keras
 from keras import Sequential
-from keras.src.layers import (Input, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dense, Dropout)
+from keras.src.layers import (Input, BatchNormalization, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dense, Dropout, LeakyReLU, SpatialDropout2D, GlobalAveragePooling2D)
 
 class CNN(keras.Model):
     def __init__(self, *args, **kwargs):
@@ -30,20 +30,42 @@ class CNN(keras.Model):
 
     # Architecture used in the "An Analysis of Audio Classification Techniques using Deep Learning Architectures" Paper
     def create2DCNN(self, input_shape, numClasses=10):
+        # return Sequential([
+        #     Input(shape=input_shape),
+        #     Conv2D(filters=64, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
+        #     MaxPooling2D(pool_size=(2, 2)),
+        #     Conv2D(filters=128, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
+        #     MaxPooling2D(pool_size=(2, 2)),
+        #     Conv2D(filters=256, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
+        #     MaxPooling2D(pool_size=(2, 2)),
+        #     Dropout(rate=0.2),
+        #     Flatten(),
+        #     Dense(units=512, activation='relu'),
+        #     Dropout(rate=0.2),
+        #     Dense(units=1024, activation='relu'),
+        #     Dropout(rate=0.2),
+        #     Dense(units=2048, activation='relu'),
+        #     Dense(units=numClasses, activation='softmax')
+        # ])
+
         return Sequential([
             Input(shape=input_shape),
-            Conv2D(filters=64, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
+            Conv2D(filters=32, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
+            BatchNormalization(),
+            SpatialDropout2D(rate=0.07),
+
+            Conv2D(filters=32, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
+            BatchNormalization(),
             MaxPooling2D(pool_size=(2, 2)),
-            Conv2D(filters=128, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
-            MaxPooling2D(pool_size=(2, 2)),
-            Conv2D(filters=256, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
-            MaxPooling2D(pool_size=(2, 2)),
-            Dropout(rate=0.2),
-            Flatten(),
-            Dense(units=512, activation='relu'),
-            Dropout(rate=0.2),
-            Dense(units=1024, activation='relu'),
-            Dropout(rate=0.2),
-            Dense(units=2048, activation='relu'),
+            SpatialDropout2D(rate=0.07),
+
+            Conv2D(filters=64, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
+            BatchNormalization(),
+            SpatialDropout2D(rate=0.14),
+
+            Conv2D(filters=64, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
+            BatchNormalization(),
+            GlobalAveragePooling2D(),
+
             Dense(units=numClasses, activation='softmax')
         ])
