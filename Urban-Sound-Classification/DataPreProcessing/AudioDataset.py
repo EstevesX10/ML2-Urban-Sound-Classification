@@ -128,7 +128,7 @@ class UrbanSound8kManager():
         # Update train and test DataFrames with the Binarized Target
         train_df = pd.concat([train_df.drop(columns=['target']), pd.DataFrame(trainBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
         test_df = pd.concat([test_df.drop(columns=['target']), pd.DataFrame(testBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
-        
+
         # Evaluate the kind of data dimensionality provided and adapt the method to it
         if self.dataDimensionality == '1D':
             # Define the columns of the features and the target
@@ -163,18 +163,8 @@ class UrbanSound8kManager():
             X_test_ = test_df[featuresCols]
             y_test = test_df[targetCols].to_numpy()
 
-            # [NOTE] THE RESHAPING TAKES TOO LONG
-            # Adjust shapes
-            X_train = np.expand_dims(X_train_[0], axis=0)
-            X_test = np.expand_dims(X_test_[0], axis=0)
-
-            for sample in X_train_[1:]:
-                sample = np.expand_dims(sample, axis=0)
-                X_train = np.vstack((X_train, sample))
-
-            for sample in X_test_[1:]:
-                sample = np.expand_dims(sample, axis=0)
-                X_test = np.vstack((X_test, sample))
+            X_train = np.stack(X_train_.values)
+            X_test = np.stack(X_test_.values)
 
         else:
             raise ValueError("[SOMETHING WENT WRONG] Invalid Data Dimensionality Selected!")
