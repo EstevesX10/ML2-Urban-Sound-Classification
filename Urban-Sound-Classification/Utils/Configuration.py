@@ -22,6 +22,7 @@ def loadConfig() -> dict:
         "N_MFCC": 13,  # Number of Mel-Frequency Cepstral Coefficients (MFCCs) to be extracted
     }
 
+
 def loadPathsConfig() -> dict:
     """
     # Description
@@ -35,11 +36,9 @@ def loadPathsConfig() -> dict:
             "Fold-1": {
                 # All the Available Features to process Audio Samples
                 "Total-Features": "./Datasets/Fold-1/Total-Features.pkl",
-
-                # Files to store the MFCCs 
+                # Files to store the MFCCs
                 "Raw-MFCCs-Feature": "./Datasets/Fold-1/Raw-MFCCs-Feature.pkl",
                 "Processed-MFCCs-Feature": "./Datasets/Fold-1/Processed-MFCCs-Feature.pkl",
-
                 # Files to store 1-Dimensional Features [Includes 2-Dimensional Data Transformed into 1D by performing mean by coefs]
                 "Extracted-1D-Features": "./Datasets/Fold-1/Extracted-1D-Features.pkl",
                 "Processed-1D-Features": "./Datasets/Fold-1/Processed-1D-Features.pkl",
@@ -107,6 +106,7 @@ def loadPathsConfig() -> dict:
                 "Extracted-1D-Features": "./Datasets/Fold-10/Extracted-1D-Features.pkl",
                 "Processed-1D-Features": "./Datasets/Fold-10/Processed-1D-Features.pkl",
             },
+            "transfer": "./Datasets/transfer.pkl",
         },
         "ModelDevelopmentAndEvaluation": {
             "MLP": "./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/",
