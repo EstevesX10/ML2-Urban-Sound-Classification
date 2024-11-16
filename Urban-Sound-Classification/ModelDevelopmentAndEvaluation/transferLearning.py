@@ -2,13 +2,14 @@ import pandas as pd
 import librosa as libr
 from Utils.Configuration import loadConfig
 from DataPreProcessing.AudioManagement import formatFilePath
-from typing import Tuple
+import numpy as np
 
 import tensorflow as tf
 import tensorflow_hub as hub
 
 
-def createEmbeddings(df: pd.DataFrame) -> Tuple[tf.data.Dataset, tf.data.Dataset]:
+# TODO: we probably dont need this
+def createEmbeddings(df: pd.DataFrame) -> tf.data.Dataset:
     # Load config
     config = loadConfig()
 
@@ -55,11 +56,13 @@ def createEmbeddings(df: pd.DataFrame) -> Tuple[tf.data.Dataset, tf.data.Dataset
     ).unbatch()
 
     cached_ds = main_ds.cache()
-    train_ds = cached_ds.filter(lambda embedding, label, fold: fold != 10)
-    test_ds = cached_ds.filter(lambda embedding, label, fold: fold == 10)
+    return cached_ds
 
-    train_ds = train_ds.cache()
-    test_ds = test_ds.cache()
+    # train_ds = cached_ds.filter(lambda embedding, label, fold: fold != 10)
+    # test_ds = cached_ds.filter(lambda embedding, label, fold: fold == 10)
+
+    # train_ds = train_ds.cache()
+    # test_ds = test_ds.cache()
 
     # remove the folds column now that it's not needed anymore
     # remove_fold_column = lambda embedding, label, fold: (embedding, label)
@@ -74,7 +77,36 @@ def createEmbeddings(df: pd.DataFrame) -> Tuple[tf.data.Dataset, tf.data.Dataset
     # train_ds = train_ds.cache().shuffle(1000).batch(32).prefetch(tf.data.AUTOTUNE)
     # test_ds = test_ds.cache().batch(32).prefetch(tf.data.AUTOTUNE)
 
-    return train_ds, test_ds
+    # return train_ds, test_ds
+
+
+def createEmbeddingsFaster(df: pd.DataFrame) -> tf.data.Dataset:
+    # Load config
+    config = loadConfig()
+
+    # Download YAMNET
+    yamnet_model_handle = "https://tfhub.dev/google/yamnet/1"
+    yamnet_model = hub.load(yamnet_model_handle)
+
+    # Add full path name
+    df["full_filename"] = df[["slice_file_name", "fold"]].apply(
+        lambda row: formatFilePath(row["fold"], row["slice_file_name"]), axis=1
+    )
+
+    results = {"embedding": [], "target": [], "fold": []}
+    for _, row in df.iterrows():
+        wav, samplingRate = libr.load(
+            row["full_filename"], duration=config["DURATION"], sr=config["SAMPLE_RATE"]
+        )
+
+        scores, embeddings, spectrogram = yamnet_model(wav)
+        num_embeddings = tf.shape(embeddings)[0]
+
+        results["embedding"].extend(embeddings.numpy())
+        results["target"].extend(np.repeat(row["class"], num_embeddings))
+        results["fold"].extend(np.repeat(row["fold"], num_embeddings))
+
+    return pd.DataFrame(results)
 
 
 def createTransferLearning(numClasses=10):

@@ -22,6 +22,7 @@ def loadConfig() -> dict:
         "N_MFCC": 13,  # Number of Mel-Frequency Cepstral Coefficients (MFCCs) to be extracted
     }
 
+
 def loadPathsConfig() -> dict:
     """
     # Description
@@ -47,6 +48,14 @@ def loadPathsConfig() -> dict:
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-1/2D-Raw-MFCCs.pkl",
                 "1D-Processed-MFCCs": "./Datasets/Fold-1/1D-Processed-MFCCs.pkl",
+                # All the Available Features to process Audio Samples
+                "Total-Features": "./Datasets/Fold-1/Total-Features.pkl",
+                # Files to store the MFCCs
+                "Raw-MFCCs-Feature": "./Datasets/Fold-1/Raw-MFCCs-Feature.pkl",
+                "Processed-MFCCs-Feature": "./Datasets/Fold-1/Processed-MFCCs-Feature.pkl",
+                # Files to store 1-Dimensional Features [Includes 2-Dimensional Data Transformed into 1D by performing mean by coefs]
+                "Extracted-1D-Features": "./Datasets/Fold-1/Extracted-1D-Features.pkl",
+                "Processed-1D-Features": "./Datasets/Fold-1/Processed-1D-Features.pkl"
             },
             "Fold-2": {
                 # All the Available Features to process the Audio Samples
@@ -62,7 +71,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-2/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-2/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-2/1D-Processed-MFCCs.pkl"
             },
             "Fold-3": {
                 # All the Available Features to process the Audio Samples
@@ -78,7 +87,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-3/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-3/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-3/1D-Processed-MFCCs.pkl"
             },
             "Fold-4": {
                 # All the Available Features to process the Audio Samples
@@ -94,7 +103,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-4/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-4/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-4/1D-Processed-MFCCs.pkl"
             },
             "Fold-5": {
                 # All the Available Features to process the Audio Samples
@@ -110,7 +119,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-5/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-5/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-5/1D-Processed-MFCCs.pkl"
             },
             "Fold-6": {
                 # All the Available Features to process the Audio Samples
@@ -126,7 +135,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-6/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-6/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-6/1D-Processed-MFCCs.pkl"
             },
             "Fold-7": {
                 # All the Available Features to process the Audio Samples
@@ -142,7 +151,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-7/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-7/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-7/1D-Processed-MFCCs.pkl"
             },
             "Fold-8": {
                 # All the Available Features to process the Audio Samples
@@ -158,7 +167,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-8/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-8/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-8/1D-Processed-MFCCs.pkl"
             },
             "Fold-9": {
                 # All the Available Features to process the Audio Samples
@@ -174,7 +183,7 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-9/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-9/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-9/1D-Processed-MFCCs.pkl"
             },
             "Fold-10": {
                 # All the Available Features to process the Audio Samples
@@ -190,8 +199,9 @@ def loadPathsConfig() -> dict:
 
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-10/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-10/1D-Processed-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-10/1D-Processed-MFCCs.pkl"
             },
+            "transfer": "./Datasets/transfer.pkl",
         },
         "ModelDevelopmentAndEvaluation": {
             "MLP": "./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/",

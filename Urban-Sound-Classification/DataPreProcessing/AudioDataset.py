@@ -1,9 +1,9 @@
-from typing import (Tuple)
+from typing import Tuple
 import numpy as np
 import pandas as pd
-from keras.src.utils import (to_categorical)
-from sklearn.model_selection import (train_test_split)
-from sklearn.preprocessing import (LabelEncoder, LabelBinarizer, StandardScaler)
+from keras.src.utils import to_categorical
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import LabelEncoder, LabelBinarizer, StandardScaler
 
 """
 # 1D
@@ -30,23 +30,25 @@ for sample in aux[1:]:
 self.y = rawMFCCs['target']
 """
 
-class UrbanSound8kManager():
-    def __init__(self, dataDimensionality:str=None, pathsConfig:dict=None) -> None:
+
+class UrbanSound8kManager:
+    def __init__(
+        self, dataDimensionality: str = "1D", pathsConfig: dict = None
+    ) -> None:
         """
-        # Description 
+        # Description
             -> Constructor that helps define new instances of the Class UrbanSound8kManager.
         ------------------------------------------------------------------------------------
         := param: dataDimensionality - Interval considered to segment and process the audio's raw features (previously extracted).
         := param: pathsConfig - Dictionary used to store the paths to important files used throughout the project.
         := return: None, since we are only instanciating a class.
         """
-        
+
         # Check if a paths configuration was given
         if pathsConfig is None:
             raise ValueError("Missing a Dictionary with the Paths Configuration!")
 
-        # Set a Default values to the dataDimensionality and intervalStep
-        self.dataDimensionality = '1D' if dataDimensionality is None else dataDimensionality
+        self.dataDimensionality = dataDimensionality
 
         # Save the dictionary with the file paths
         self.pathsConfig = pathsConfig
@@ -61,34 +63,46 @@ class UrbanSound8kManager():
         """
 
         # Interpret the files to use depending on the data Dimensionality provided
-        if self.dataDimensionality == '1D':
-            fileType = 'Processed-1D-Features'
+        if self.dataDimensionality == "1D":
+            fileType = "Processed-1D-Features"
 
-        elif self.dataDimensionality == '2D':
-            fileType = 'Raw-MFCCs-Feature'
+        elif self.dataDimensionality == "2D":
+            fileType = "Raw-MFCCs-Feature"
+
+        elif self.dataDimensionality == "transfer":
+            fileType = "yamnet"
 
         else:
             # Invalid Data Dimensionality
-            raise ValueError("Invalid Data Dimensionality Selected! (Please choose from ['1D', '2D'])")
-        
+            raise ValueError(
+                "Invalid Data Dimensionality Selected! (Please choose from ['1D', '2D'])"
+            )
+
         # Create a dataframe with all the collected data across all folds
         df = None
 
         # Iterate through the datasets' folds
-        for fold in range(1, 11):
-            # Load the current fold dataframe
-            fold_df = pd.read_pickle(self.pathsConfig['Datasets'][f'Fold-{fold}'][fileType])
+        if self.dataDimensionality == "transfer":
+            df = pd.read_pickle(self.pathsConfig["Datasets"]["transfer"])
+        else:
+            for fold in range(1, 11):
+                # Load the current fold dataframe
+                fold_df = pd.read_pickle(
+                    self.pathsConfig["Datasets"][f"Fold-{fold}"][fileType]
+                )
 
-            # If the DataFrame has yet to be created, then we initialize it
-            if df is None:
-                df = fold_df
-            else:
-                # Concatenate the current fold's DataFrame
-                df = pd.concat([df, fold_df], axis=0, ignore_index=True)
+                # If the DataFrame has yet to be created, then we initialize it
+                if df is None:
+                    df = fold_df
+                else:
+                    # Concatenate the current fold's DataFrame
+                    df = pd.concat([df, fold_df], axis=0, ignore_index=True)
 
         return df
 
-    def getTrainTestSplitFold(self, testFold:int=None) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
+    def getTrainTestSplitFold(
+        self, testFold: int = None
+    ) -> Tuple[np.ndarray, np.ndarray, np.ndarray, np.ndarray]:
         """
         # Description
             -> This method allows to obtain the UrbanSound8k's overall train and test
@@ -104,17 +118,17 @@ class UrbanSound8kManager():
 
         # Verify the integrity of the test fold selected
         if testFold < 1 or testFold > 10:
-            raise ValueError("Invalid Test Fold!") 
+            raise ValueError("Invalid Test Fold!")
 
         # Manage data from all the collected DataFrames
         df = self.manageData()
 
         # Calculate the amount of unique target labels
-        numClasses = np.unique(df['target']).size
+        numClasses = np.unique(df["target"]).size
 
         # Separate the data into train and test
-        train_df = df.loc[df['fold'] != testFold]
-        test_df = df.loc[df['fold'] == testFold]
+        train_df = df.loc[df["fold"] != testFold]
+        test_df = df.loc[df["fold"] == testFold]
 
         # Reset indexes
         train_df = train_df.reset_index(drop=True)
@@ -122,24 +136,38 @@ class UrbanSound8kManager():
 
         # Binarize target column on the train set and transform the one on the test set
         labelBinarizer = LabelBinarizer()
-        trainBinarizedTarget = labelBinarizer.fit_transform(train_df['target'])
-        testBinarizedTarget = labelBinarizer.transform(test_df['target'])
+        trainBinarizedTarget = labelBinarizer.fit_transform(train_df["target"])
+        testBinarizedTarget = labelBinarizer.transform(test_df["target"])
 
         # Update train and test DataFrames with the Binarized Target
-        train_df = pd.concat([train_df.drop(columns=['target']), pd.DataFrame(trainBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
-        test_df = pd.concat([test_df.drop(columns=['target']), pd.DataFrame(testBinarizedTarget, columns=labelBinarizer.classes_)], axis=1)
+        train_df = pd.concat(
+            [
+                train_df.drop(columns=["target"]),
+                pd.DataFrame(trainBinarizedTarget, columns=labelBinarizer.classes_),
+            ],
+            axis=1,
+        )
+        test_df = pd.concat(
+            [
+                test_df.drop(columns=["target"]),
+                pd.DataFrame(testBinarizedTarget, columns=labelBinarizer.classes_),
+            ],
+            axis=1,
+        )
 
         # Evaluate the kind of data dimensionality provided and adapt the method to it
-        if self.dataDimensionality == '1D':
+        if self.dataDimensionality == "1D":
             # Define the columns of the features and the target
-            featuresCols = train_df.columns[1:len(train_df.columns) - numClasses]
+            featuresCols = train_df.columns[1 : len(train_df.columns) - numClasses]
             targetCols = train_df.columns[-numClasses:]
 
             # Normalize the data
             standardScaler = StandardScaler()
 
             # Fit the scaler and transform the training data
-            train_df[featuresCols] = standardScaler.fit_transform(train_df[featuresCols])
+            train_df[featuresCols] = standardScaler.fit_transform(
+                train_df[featuresCols]
+            )
 
             # Transform the test set according to the trained scaler
             test_df[featuresCols] = standardScaler.transform(test_df[featuresCols])
@@ -150,12 +178,12 @@ class UrbanSound8kManager():
 
             X_test = test_df[featuresCols].to_numpy()
             y_test = test_df[targetCols].to_numpy()
-        
-        elif self.dataDimensionality == '2D':
+
+        elif self.dataDimensionality == "2D":
             # Define the columns of the features and the target
-            featuresCols = 'MFCC'
+            featuresCols = "MFCC"
             targetCols = train_df.columns[-numClasses:]
-        
+
             # Split the data into X and y for both train and test sets
             X_train_ = train_df[featuresCols]
             y_train = train_df[targetCols].to_numpy()
@@ -166,8 +194,45 @@ class UrbanSound8kManager():
             X_train = np.stack(X_train_.values)
             X_test = np.stack(X_test_.values)
 
+        elif self.dataDimensionality == "transfer":
+            # Define the columns of the features and the target
+            featuresCols = "embedding"
+            targetCols = train_df.columns[-numClasses:]
+
+            # Split the data into X and y for both train and test sets
+            X_train = train_df[featuresCols]
+            y_train = train_df[targetCols].to_numpy()
+
+            X_test = test_df[featuresCols]
+            y_test = test_df[targetCols].to_numpy()
+
+            X_train = np.stack(X_train)
+            X_test = np.stack(X_test)
+
         else:
-            raise ValueError("[SOMETHING WENT WRONG] Invalid Data Dimensionality Selected!")
+            raise ValueError(
+                "[SOMETHING WENT WRONG] Invalid Data Dimensionality Selected!"
+            )
 
         # Return the sets computed
         return X_train, y_train, X_test, y_test
+
+    def cross_validate(self, compiled_model, epochs: int = 100, callbacks: list = None):
+        histories = []
+
+        for testFold in range(1, 3):
+            X_train, y_train, X_val, y_val = self.getTrainTestSplitFold(
+                testFold=testFold
+            )
+
+            history = compiled_model.fit(
+                X_train,
+                y_train,
+                validation_data=(X_val, y_val),
+                epochs=epochs,
+                callbacks=callbacks,
+            )
+
+            histories.append(history)
+
+        return histories
