@@ -328,10 +328,9 @@ def processRawFeatures(fold:int, intervalStep:int, featuresDimensionality:str, p
                 # Iterate through the 2-Dimensional Features
                 for feature in twoDimensionalFeatures:
                     # Fetch and Convert the array in the current cell
-                    featureArray = row[feature]
+                    featureArray = np.mean(row[feature], axis=1)
 
                     # Update the audio Sample Data with all the components previously calculated during feature extraction
-                    # Since we already
                     for componentIdx, component in enumerate(featureArray):
                         audioSampleData.update({
                             f"{columnDetails[featureIdx]['feature']}_{componentIdx}":component
