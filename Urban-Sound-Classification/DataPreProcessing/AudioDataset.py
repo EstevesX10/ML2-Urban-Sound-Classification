@@ -195,6 +195,21 @@ class UrbanSound8kManager:
             X_train = np.stack(X_train_.values)
             X_test = np.stack(X_test_.values)
 
+            # Approach 1
+            # mean_time_step = X_train.mean(axis=1, keepdims=True)
+            # std_time_step = X_train.std(axis=1, keepdims=True)
+            # X_train = (X_train - mean_time_step) / std_time_step
+
+            # mean_time_step = X_test.mean(axis=1, keepdims=True)
+            # std_time_step = X_test.std(axis=1, keepdims=True)
+            # X_test = (X_test - mean_time_step) / std_time_step
+
+            # Approach 2
+            # scaler = MinMaxScaler()
+            # # Flatten array for scaling, then reshape back
+            # X_train = scaler.fit_transform(X_train.reshape(-1, X_train.shape[-1])).reshape(X_train.shape)
+            # X_test = scaler.transform(X_test.reshape(-1, X_test.shape[-1])).reshape(X_test.shape)
+
         elif self.dataDimensionality == "transfer":
             # Define the columns of the features and the target
             featuresCols = "embedding"
