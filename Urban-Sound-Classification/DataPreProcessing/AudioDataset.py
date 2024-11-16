@@ -3,7 +3,7 @@ import numpy as np
 import pandas as pd
 from keras.src.utils import to_categorical
 from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, LabelBinarizer, StandardScaler
+from sklearn.preprocessing import LabelEncoder, LabelBinarizer, StandardScaler, MinMaxScaler
 
 """
 # 1D
@@ -64,7 +64,7 @@ class UrbanSound8kManager:
 
         # Interpret the files to use depending on the data Dimensionality provided
         if self.dataDimensionality == "1D":
-            fileType = "1D-Processed-Features"
+            fileType = "1D-Processed-MFCCs"
 
         elif self.dataDimensionality == "2D":
             fileType = "2D-Raw-MFCCs"
@@ -163,6 +163,7 @@ class UrbanSound8kManager:
 
             # Normalize the data
             standardScaler = StandardScaler()
+            # standardScaler = MinMaxScaler(feature_range=(0, 1))
 
             # Fit the scaler and transform the training data
             train_df[featuresCols] = standardScaler.fit_transform(
