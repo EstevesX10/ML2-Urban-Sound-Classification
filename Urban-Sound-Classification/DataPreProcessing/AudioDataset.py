@@ -64,10 +64,10 @@ class UrbanSound8kManager:
 
         # Interpret the files to use depending on the data Dimensionality provided
         if self.dataDimensionality == "1D":
-            fileType = "Processed-1D-Features"
+            fileType = "1D-Processed-Features"
 
         elif self.dataDimensionality == "2D":
-            fileType = "Raw-MFCCs-Feature"
+            fileType = "2D-Raw-MFCCs"
 
         elif self.dataDimensionality == "transfer":
             fileType = "yamnet"
@@ -158,7 +158,7 @@ class UrbanSound8kManager:
         # Evaluate the kind of data dimensionality provided and adapt the method to it
         if self.dataDimensionality == "1D":
             # Define the columns of the features and the target
-            featuresCols = train_df.columns[1 : len(train_df.columns) - numClasses]
+            featuresCols = train_df.columns[2 : len(train_df.columns) - numClasses]
             targetCols = train_df.columns[-numClasses:]
 
             # Normalize the data

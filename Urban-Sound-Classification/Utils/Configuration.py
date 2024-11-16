@@ -48,14 +48,6 @@ def loadPathsConfig() -> dict:
                 # Files to store the MFCCs 
                 "2D-Raw-MFCCs": "./Datasets/Fold-1/2D-Raw-MFCCs.pkl",
                 "1D-Processed-MFCCs": "./Datasets/Fold-1/1D-Processed-MFCCs.pkl",
-                # All the Available Features to process Audio Samples
-                "Total-Features": "./Datasets/Fold-1/Total-Features.pkl",
-                # Files to store the MFCCs
-                "Raw-MFCCs-Feature": "./Datasets/Fold-1/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-1/Processed-MFCCs-Feature.pkl",
-                # Files to store 1-Dimensional Features [Includes 2-Dimensional Data Transformed into 1D by performing mean by coefs]
-                "Extracted-1D-Features": "./Datasets/Fold-1/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-1/Processed-1D-Features.pkl"
             },
             "Fold-2": {
                 # All the Available Features to process the Audio Samples
