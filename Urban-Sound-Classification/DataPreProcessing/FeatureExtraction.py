@@ -93,8 +93,6 @@ def extractAllRawFeatures(audio_df:pd.DataFrame, fold:int, config:dict, pathsCon
 
         # Save the Dataframe
         df.to_pickle(pathsConfig['Datasets'][f'Fold-{fold}']['All-Raw-Features'])
-    else:
-        print(f"[Fold-{fold}]\tAll Features have already been Extracted!")
 
 def extractRawFeatures1D(audio_df:pd.DataFrame, fold:int, config:dict, pathsConfig:dict) -> None:
     """
@@ -432,16 +430,10 @@ def extractMFCCs(audio_df:pd.DataFrame, raw:bool, fold:int, config:dict, pathsCo
             })
 
             # Append the audio data to the previous audio's list
-            audio.append(audioData)
+            data.append(audioData)
 
         # Create a DataFrame with the collected data
         df = pd.DataFrame(data)
 
         # Save the Dataframe
         df.to_pickle(mfccsFilePath)
-
-    # else:
-    #     if raw:
-    #         print(f"[Fold-{fold}]\tRaw MFCC's have already been Extracted!")
-    #     else:
-    #         print(f"[Fold-{fold}]\tProcessed MFCC's have already been Extracted!")
