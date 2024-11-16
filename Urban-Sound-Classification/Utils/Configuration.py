@@ -33,79 +33,164 @@ def loadPathsConfig() -> dict:
         "ExploratoryDataAnalysis": "./ExperimentalResults/ExploratoryDataAnalysis",
         "Datasets": {
             "Fold-1": {
-                # All the Available Features to process Audio Samples
-                "Total-Features": "./Datasets/Fold-1/Total-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-1/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-1/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-1/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-1/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-1/2D-Processed-Features.pkl",
 
                 # Files to store the MFCCs 
-                "Raw-MFCCs-Feature": "./Datasets/Fold-1/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-1/Processed-MFCCs-Feature.pkl",
-
-                # Files to store 1-Dimensional Features [Includes 2-Dimensional Data Transformed into 1D by performing mean by coefs]
-                "Extracted-1D-Features": "./Datasets/Fold-1/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-1/Processed-1D-Features.pkl",
+                "2D-Raw-MFCCs": "./Datasets/Fold-1/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-1/1D-Processed-MFCCs.pkl",
             },
             "Fold-2": {
-                "Total-Features": "./Datasets/Fold-2/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-2/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-2/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-2/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-2/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-2/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-2/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-2/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-2/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-2/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-2/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-2/1D-Processed-MFCCs.pkl",
             },
             "Fold-3": {
-                "Total-Features": "./Datasets/Fold-3/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-3/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-3/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-3/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-3/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-3/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-3/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-3/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-3/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-3/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-3/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-3/1D-Processed-MFCCs.pkl",
             },
             "Fold-4": {
-                "Total-Features": "./Datasets/Fold-4/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-4/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-4/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-4/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-4/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-4/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-4/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-4/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-4/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-4/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-4/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-4/1D-Processed-MFCCs.pkl",
             },
             "Fold-5": {
-                "Total-Features": "./Datasets/Fold-5/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-5/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-5/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-5/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-5/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-5/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-5/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-5/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-5/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-5/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-5/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-5/1D-Processed-MFCCs.pkl",
             },
             "Fold-6": {
-                "Total-Features": "./Datasets/Fold-6/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-6/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-6/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-6/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-6/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-6/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-6/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-6/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-6/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-6/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-6/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-6/1D-Processed-MFCCs.pkl",
             },
             "Fold-7": {
-                "Total-Features": "./Datasets/Fold-7/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-7/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-7/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-7/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-7/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-7/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-7/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-7/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-7/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-7/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-7/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-7/1D-Processed-MFCCs.pkl",
             },
             "Fold-8": {
-                "Total-Features": "./Datasets/Fold-8/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-8/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-8/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-8/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-8/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-8/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-8/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-8/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-8/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-8/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-8/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-8/1D-Processed-MFCCs.pkl",
             },
             "Fold-9": {
-                "Total-Features": "./Datasets/Fold-9/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-9/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-9/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-9/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-9/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-9/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-9/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-9/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-9/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-9/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-9/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-9/1D-Processed-MFCCs.pkl",
             },
             "Fold-10": {
-                "Total-Features": "./Datasets/Fold-10/Total-Features.pkl",
-                "Raw-MFCCs-Feature": "./Datasets/Fold-10/Raw-MFCCs-Feature.pkl",
-                "Processed-MFCCs-Feature": "./Datasets/Fold-10/Processed-MFCCs-Feature.pkl",
-                "Extracted-1D-Features": "./Datasets/Fold-10/Extracted-1D-Features.pkl",
-                "Processed-1D-Features": "./Datasets/Fold-10/Processed-1D-Features.pkl",
+                # All the Available Features to process the Audio Samples
+                "All-Raw-Features": "./Datasets/Fold-10/All-Raw-Features.pkl",
+
+                # Files to store 1-Dimensional Features
+                "1D-Raw-Features": "./Datasets/Fold-10/1D-Raw-Features.pkl",
+                "1D-Processed-Features": "./Datasets/Fold-10/1D-Processed-Features.pkl",
+                
+                # Files to store 2-Dimensional Features
+                "2D-Raw-Features": "./Datasets/Fold-10/2D-Raw-Features.pkl",
+                "2D-Processed-Features": "./Datasets/Fold-10/2D-Processed-Features.pkl",
+
+                # Files to store the MFCCs 
+                "2D-Raw-MFCCs": "./Datasets/Fold-10/2D-Raw-MFCCs.pkl",
+                "1D-Processed-MFCCs": "./Datasets/Fold-10/1D-Processed-MFCCs.pkl",
             },
         },
         "ModelDevelopmentAndEvaluation": {
