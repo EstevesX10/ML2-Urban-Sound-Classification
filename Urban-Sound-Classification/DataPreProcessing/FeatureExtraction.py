@@ -286,8 +286,7 @@ def processRawFeatures(fold:int, intervalStep:int, featuresDimensionality:str, p
 
         # Load the dataset with the raw features and select the important columnhs
         df = pd.read_pickle(pathsConfig['Datasets'][f'Fold-{fold}'][f'{featuresDimensionality}-Raw-Features'])
-        oneDimensionalFeatures = df.columns[2:len(df.columns) - 2 - 3]
-        twoDimensionalFeatures = df.columns[len(df.columns) - 2 - 3 : len(df.columns) - 2]
+        featuresToProcess = df.columns[2:len(df.columns) - 2]
 
         # Fetch the Column's Details
         columnDetails = getFeaturesDetails(df, intervalStep)
@@ -302,7 +301,7 @@ def processRawFeatures(fold:int, intervalStep:int, featuresDimensionality:str, p
 
             if featuresDimensionality == "1D":
                 # Iterate through the 1-Dimensional Features
-                for feature in oneDimensionalFeatures:
+                for feature in featuresToProcess:
                     # Fetch the array in the current cell
                     featureArray = row[feature]
 
@@ -326,7 +325,7 @@ def processRawFeatures(fold:int, intervalStep:int, featuresDimensionality:str, p
             
             elif featuresDimensionality == "2D":
                 # Iterate through the 2-Dimensional Features
-                for feature in twoDimensionalFeatures:
+                for feature in featuresToProcess:
                     # Fetch and Convert the array in the current cell
                     featureArray = np.mean(row[feature], axis=1)
 
