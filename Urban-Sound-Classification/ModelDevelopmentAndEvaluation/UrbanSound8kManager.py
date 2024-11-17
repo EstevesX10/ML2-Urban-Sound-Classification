@@ -2,35 +2,10 @@ from typing import Tuple
 import numpy as np
 import pandas as pd
 from sklearn.preprocessing import LabelBinarizer, StandardScaler
+import keras
+from keras.src.callbacks.history import History
 from .DataVisualization import plotNetworkTrainingPerformance
 from tqdm.auto import tqdm
-
-
-"""
-# 1D
-# Process the features and target into Arrays
-self.x = processed1D_df[processed1D_df.columns[:-1]].to_numpy()
-self.y = processed1D_df['target']
-
-
-# 2D 
-# Get the Raw MFCCs
-rawMFCCs = pd.read_pickle(self.pathsConfig['Datasets'][f'Fold-{self.fold}']['Raw-MFCCs-Feature'])        
-
-# Compute features
-aux = rawMFCCs['MFCC'].to_numpy()
-# print(np.array(aux[0]).shape, type(aux[0]))
-
-self.x = np.expand_dims(aux[0], axis=0)
-
-for sample in aux[1:]:
-    sample = np.expand_dims(sample, axis=0)
-    self.x = np.vstack((self.x, sample))
-
-# Save the target labels
-self.y = rawMFCCs['target']
-"""
-
 
 class UrbanSound8kManager:
     def __init__(
@@ -235,17 +210,33 @@ class UrbanSound8kManager:
         # Return the sets computed
         return X_train, y_train, X_test, y_test
 
-    def cross_validate(self, compiled_model, epochs: int = 100, callbacks: list = None):
+    def cross_validate(self, compiledModel:keras.models.Sequential, epochs: int = 100, callbacks: list = None) -> list[History]:
+        """
+        # Description
+            -> This method allows to perform cross-validation over the UrbanSound8k dataset
+            given a compiled Model.
+        ------------------------------------------------------------------------------------
+        := param: compiledModel - Keras sequential model previously compiled.
+        := param: epochs - Number of iterations to train the model at each fold.
+        := param: callbacks - List of parameters that help monitor and modify the behavior of your model during training, evaluation and inference.
+        := return: A list with the performance mestrics (History) of the model at each fold.
+        """
+        
+        # Initialize a list to store all the model's history for each fold
         histories = []
 
-        initial_weights = compiled_model.get_weights()
+        # Geting the model initial weights
+        initial_weights = compiledModel.get_weights()
 
+        # Perform Cross-Validation
         for testFold in tqdm(range(1, 10), desc="Cross-validating..."):
+            # Partition the data into train and validation
             X_train, y_train, X_val, y_val = self.getTrainTestSplitFold(
                 testFold=testFold
             )
 
-            history = compiled_model.fit(
+            # Train the model
+            history = compiledModel.fit(
                 X_train,
                 y_train,
                 validation_data=(X_val, y_val),
@@ -253,12 +244,13 @@ class UrbanSound8kManager:
                 callbacks=callbacks,
             )
 
-            y_pred = compiled_model.predict(X_val).argmax(1)
+            # Plotting model training performance
             plotNetworkTrainingPerformance(
-                history.history, y_val.argmax(1), y_pred, self.classes_
+                model=compiledModel, X_test=X_val, y_test=y_val, trainHistory=history.history, targetLabels=self.classes_
             )
 
-            compiled_model.set_weights(initial_weights)
+
+            compiledModel.set_weights(initial_weights)
             histories.append(history)
 
         return histories
