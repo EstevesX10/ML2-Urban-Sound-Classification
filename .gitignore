@@ -25,6 +25,7 @@ TestResults.xml
 .ipynb_checkpoints
 .virtual_documents
 *.gz
+UrbanSound8K/
 UrbanSound8k/
 Datasets/
 __pycache__/
