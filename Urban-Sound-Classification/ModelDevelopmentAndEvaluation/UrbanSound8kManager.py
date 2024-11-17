@@ -195,6 +195,13 @@ class UrbanSound8kManager:
             X_val = np.stack(X_val)
             X_test = np.stack(X_test)
 
+            # Normalize the data
+            mean = X_train.mean()
+            std = X_train.std()
+
+            X_train = (X_train - mean) / std
+            X_test = (X_test - mean) / std
+
             # Approach 1
             # mean_time_step = X_train.mean(axis=1, keepdims=True)
             # std_time_step = X_train.std(axis=1, keepdims=True)
@@ -213,7 +220,7 @@ class UrbanSound8kManager:
         elif self.dataDimensionality == "transfer":
             # Define the columns of the features and the target
             featuresCols = "embedding"
-            targetCols = train_df.columns[-numClasses:]  # TODO: is this correct?
+            targetCols = train_df.columns[-numClasses:]
 
             # Split the data into X and y for train, validation and test sets
             X_train = train_df[featuresCols]
