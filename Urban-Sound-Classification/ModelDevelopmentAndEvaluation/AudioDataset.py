@@ -1,9 +1,10 @@
 from typing import Tuple
 import numpy as np
 import pandas as pd
-from keras.src.utils import to_categorical
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import LabelEncoder, LabelBinarizer, StandardScaler, MinMaxScaler
+from sklearn.preprocessing import LabelBinarizer, StandardScaler
+from .DataVisualization import plotNetworkTrainingPerformance
+from tqdm.auto import tqdm
+
 
 """
 # 1D
@@ -117,7 +118,7 @@ class UrbanSound8kManager:
             raise ValueError("Missing the number of the Test Fold!")
 
         # Verify the integrity of the test fold selected
-        if testFold < 1 or testFold > 10:
+        if testFold < 1 or testFold >= 10:
             raise ValueError("Invalid Test Fold!")
 
         # Manage data from all the collected DataFrames
@@ -127,8 +128,8 @@ class UrbanSound8kManager:
         numClasses = np.unique(df["target"]).size
 
         # Separate the data into train and test
-        train_df = df.loc[df["fold"] != testFold]
-        test_df = df.loc[df["fold"] == testFold]
+        train_df = df[(df["fold"] != testFold) & (df["fold"] != 10)]
+        test_df = df[(df["fold"] == testFold) & (df["fold"] != 10)]
 
         # Reset indexes
         train_df = train_df.reset_index(drop=True)
@@ -138,6 +139,7 @@ class UrbanSound8kManager:
         labelBinarizer = LabelBinarizer()
         trainBinarizedTarget = labelBinarizer.fit_transform(train_df["target"])
         testBinarizedTarget = labelBinarizer.transform(test_df["target"])
+        self.classes_ = labelBinarizer.classes_
 
         # Update train and test DataFrames with the Binarized Target
         train_df = pd.concat(
@@ -213,7 +215,7 @@ class UrbanSound8kManager:
         elif self.dataDimensionality == "transfer":
             # Define the columns of the features and the target
             featuresCols = "embedding"
-            targetCols = train_df.columns[-numClasses:]
+            targetCols = train_df.columns[-numClasses:]  # TODO: is this correct?
 
             # Split the data into X and y for both train and test sets
             X_train = train_df[featuresCols]
@@ -236,7 +238,9 @@ class UrbanSound8kManager:
     def cross_validate(self, compiled_model, epochs: int = 100, callbacks: list = None):
         histories = []
 
-        for testFold in range(1, 3):
+        initial_weights = compiled_model.get_weights()
+
+        for testFold in tqdm(range(1, 10), desc="Cross-validating..."):
             X_train, y_train, X_val, y_val = self.getTrainTestSplitFold(
                 testFold=testFold
             )
@@ -249,6 +253,12 @@ class UrbanSound8kManager:
                 callbacks=callbacks,
             )
 
+            y_pred = compiled_model.predict(X_val).argmax(1)
+            plotNetworkTrainingPerformance(
+                history.history, y_val.argmax(1), y_pred, self.classes_
+            )
+
+            compiled_model.set_weights(initial_weights)
             histories.append(history)
 
         return histories

@@ -3,71 +3,86 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from keras.src.callbacks.history import History
 import scikit_posthocs as sp
+from sklearn.metrics import ConfusionMatrixDisplay
 
-def plotNetworkTrainingPerformance(trainHistory:History=None) -> None:
+
+def plotNetworkTrainingPerformance(
+    trainHistory: History, y_true, y_pred, class_labels=None
+) -> None:
     """
     # Description
-        -> This function helps visualize the network's performance 
+        -> This function helps visualize the network's performance
         during training through it's variation on both loss and accuracy.
     ---------------------------------------------------------------------
     := param: trainHistory - Network's training history data.
     := return: None, since we are simply plotting data.
     """
 
-    # Check if a Network train history was passed on
-    if trainHistory is None:
-        raise ValueError("Missing the Training History Data of the Network!")
-
     # Create a figure with axis
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(14, 5))
 
     # Plot training & validation accuracy values
-    ax1.plot(trainHistory['accuracy'], label='Train Accuracy')
-    ax1.plot(trainHistory['val_accuracy'], label='Validation Accuracy')
-    ax1.set_title('Model Accuracy')
-    ax1.set_ylabel('Accuracy')
-    ax1.set_xlabel('Epoch')
-    ax1.legend(loc='lower right')
+    ax1.plot(trainHistory["accuracy"], label="Train Accuracy")
+    ax1.plot(trainHistory["val_accuracy"], label="Validation Accuracy")
+    ax1.set_title("Model Accuracy")
+    ax1.set_ylabel("Accuracy")
+    ax1.set_xlabel("Epoch")
+    ax1.legend(loc="lower right")
 
     # Plot training & validation loss values
-    ax2.plot(trainHistory['loss'], label='Train Loss')
-    ax2.plot(trainHistory['val_loss'], label='Validation Loss')
-    ax2.set_title('Model Loss')
-    ax2.set_ylabel('Loss')
-    ax2.set_xlabel('Epoch')
-    ax2.legend(loc='upper right')
+    ax2.plot(trainHistory["loss"], label="Train Loss")
+    ax2.plot(trainHistory["val_loss"], label="Validation Loss")
+    ax2.set_title("Model Loss")
+    ax2.set_ylabel("Loss")
+    ax2.set_xlabel("Epoch")
+    ax2.legend(loc="upper right")
+
+    ConfusionMatrixDisplay.from_predictions(
+        y_true, y_pred, display_labels=class_labels, xticks_rotation="vertical", ax=ax3
+    )
+    ax3.set_title("Confusion Matrix")
 
     plt.tight_layout()
     plt.show()
 
 
-def plotCritialDifferenceDiagram(matrix:np.ndarray=None, colors:dict=None) -> None:
+def plotCritialDifferenceDiagram(
+    matrix: np.ndarray = None, colors: dict = None
+) -> None:
     """
     # Description
         -> Plots the Critical Difference Diagram.
     ---------------------------------------------
     := param: matrix - Dataframe with the Accuracies obtained by the Models.
     := param: colors - Dictionary that matches each column of the df to a color to use in the Diagram.
-    := return: None, since we are simply ploting a diagram. 
+    := return: None, since we are simply ploting a diagram.
     """
-    
+
     # Check if the matrix was passed
     if matrix is None:
         raise ValueError("Missing a Matrix!")
-    
+
     # Check if a colors dictionary was provides
     if colors is None:
-        raise ValueError("Failed to get a dictionary with the colors for the Critical Difference Diagram")
+        raise ValueError(
+            "Failed to get a dictionary with the colors for the Critical Difference Diagram"
+        )
 
     # Calculate ranks
     ranks = matrix.rank(axis=1, ascending=False).mean()
-    
+
     # Perform Nemenyi post-hoc test
     nemenyi = sp.posthoc_nemenyi_friedman(matrix)
 
     # Add Some Styling
-    marker = {'marker':'o', 'linewidth':1}
-    labelProps = {'backgroundcolor':'#ADD5F7', 'verticalalignment':'top'}
-    
+    marker = {"marker": "o", "linewidth": 1}
+    labelProps = {"backgroundcolor": "#ADD5F7", "verticalalignment": "top"}
+
     # Plot the Critical Difference Diagram
-    _ = sp.critical_difference_diagram(ranks, nemenyi, color_palette=colors, marker_props=marker, label_props=labelProps)
+    _ = sp.critical_difference_diagram(
+        ranks,
+        nemenyi,
+        color_palette=colors,
+        marker_props=marker,
+        label_props=labelProps,
+    )
