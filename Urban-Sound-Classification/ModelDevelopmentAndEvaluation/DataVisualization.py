@@ -1,16 +1,23 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
+import seaborn as sns
+import keras
 from keras.src.callbacks.history import History
+from sklearn.metrics import confusion_matrix, classification_report
 import scikit_posthocs as sp
 
-def plotNetworkTrainingPerformance(trainHistory:History=None) -> None:
+def plotNetworkTrainingPerformance(model:keras.Model, X_test:np.ndarray, y_test:np.ndarray, trainHistory:History=None, targetLabels=None) -> None:
     """
     # Description
         -> This function helps visualize the network's performance 
         during training through it's variation on both loss and accuracy.
     ---------------------------------------------------------------------
+    := param: model - Keras model instance.
+    := param: X_test - Test Set [Features].
+    := param: y_test - Test Set [Target Label].
     := param: trainHistory - Network's training history data.
+    := param: targetLabels - Target Labels of the UrbanSound8k dataset.
     := return: None, since we are simply plotting data.
     """
 
@@ -19,23 +26,42 @@ def plotNetworkTrainingPerformance(trainHistory:History=None) -> None:
         raise ValueError("Missing the Training History Data of the Network!")
 
     # Create a figure with axis
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 5))
+    fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(21, 5))
 
     # Plot training & validation accuracy values
-    ax1.plot(trainHistory['accuracy'], label='Train Accuracy')
-    ax1.plot(trainHistory['val_accuracy'], label='Validation Accuracy')
+    ax1.plot(trainHistory.history['accuracy'], label='Train Accuracy')
+    ax1.plot(trainHistory.history['val_accuracy'], label='Validation Accuracy')
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
     ax1.set_xlabel('Epoch')
     ax1.legend(loc='lower right')
 
     # Plot training & validation loss values
-    ax2.plot(trainHistory['loss'], label='Train Loss')
-    ax2.plot(trainHistory['val_loss'], label='Validation Loss')
+    ax2.plot(trainHistory.history['loss'], label='Train Loss')
+    ax2.plot(trainHistory.history['val_loss'], label='Validation Loss')
     ax2.set_title('Model Loss')
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
     ax2.legend(loc='upper right')
+
+    # Confusion matrix
+    if model is not None and X_test is not None and y_test is not None:
+        # Get predictions
+        y_pred = np.argmax(model.predict(X_test), axis=1)
+        y_true = np.argmax(y_test, axis=1)
+
+        # Compute confusion matrix
+        cm = confusion_matrix(y_true, y_pred)
+        
+        # Plot confusion matrix
+        sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', ax=ax3,
+                    xticklabels=targetLabels, yticklabels=targetLabels)
+        ax3.set_title('Confusion Matrix')
+        ax3.set_xlabel('Predicted Labels')
+        ax3.set_ylabel('True Labels')
+    else:
+        ax3.axis('off')  # Hide the confusion matrix plot if data is not provided
+        print("Confusion Matrix not plotted because model, X_test, or y_test is missing.")
 
     plt.tight_layout()
     plt.show()
