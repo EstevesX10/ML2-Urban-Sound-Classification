@@ -97,7 +97,7 @@ class UrbanSound8kManager:
             raise ValueError("Missing the number of the Test Fold!")
 
         # Verify the integrity of the test fold selected
-        if testFold < 1 or testFold >= 10:
+        if testFold < 1 or testFold > 10:
             raise ValueError("Invalid Test Fold!")
 
         # Manage data from all the collected DataFrames
