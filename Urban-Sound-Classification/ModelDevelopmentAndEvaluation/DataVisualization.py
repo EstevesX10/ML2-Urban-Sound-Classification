@@ -26,16 +26,16 @@ def plotNetworkTrainingPerformance(model:keras.Model, X_test:np.ndarray, y_test:
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(21, 5))
 
     # Plot training & validation accuracy values
-    ax1.plot(trainHistory.history['accuracy'], label='Train Accuracy')
-    ax1.plot(trainHistory.history['val_accuracy'], label='Validation Accuracy')
+    ax1.plot(trainHistory['accuracy'], label='Train Accuracy')
+    ax1.plot(trainHistory['val_accuracy'], label='Validation Accuracy')
     ax1.set_title('Model Accuracy')
     ax1.set_ylabel('Accuracy')
     ax1.set_xlabel('Epoch')
     ax1.legend(loc='lower right')
 
     # Plot training & validation loss values
-    ax2.plot(trainHistory.history['loss'], label='Train Loss')
-    ax2.plot(trainHistory.history['val_loss'], label='Validation Loss')
+    ax2.plot(trainHistory['loss'], label='Train Loss')
+    ax2.plot(trainHistory['val_loss'], label='Validation Loss')
     ax2.set_title('Model Loss')
     ax2.set_ylabel('Loss')
     ax2.set_xlabel('Epoch')
