@@ -1,7 +1,8 @@
 from typing import Tuple
 import numpy as np
 import pandas as pd
-from tqdm import tqdm
+import os
+from pathlib import Path
 
 from sklearn.preprocessing import LabelBinarizer, StandardScaler
 from sklearn.metrics import confusion_matrix
@@ -10,11 +11,11 @@ import keras
 from keras.src.callbacks.history import History
 
 from .DataVisualization import plotNetworkTrainingPerformance, plotConfusionMatrix
-
+from .pickleFileManagement import saveObject, loadObject
 
 class UrbanSound8kManager:
     def __init__(
-        self, dataDimensionality: str = "1D", pathsConfig: dict = None
+        self, dataDimensionality: str = None, modelType: str = None, pathsConfig: dict = None
     ) -> None:
         """
         # Description
@@ -25,11 +26,23 @@ class UrbanSound8kManager:
         := return: None, since we are only instanciating a class.
         """
 
+        # Check if a DataDimensionality was given
+        if dataDimensionality is None:
+            raise ValueError("Missing the Value for Data Dimensionality!")
+
+        # Check if the modelType was passed on
+        if modelType is None:
+            raise ValueError("Missing the Model Type to be later used for Trainning! [Use \"CNN\", \"MLP\" or \"YAMNET\" - depending on what model you plan to train on the selected data!]")
+
         # Check if a paths configuration was given
         if pathsConfig is None:
             raise ValueError("Missing a Dictionary with the Paths Configuration!")
 
+        # Save the data dimensionality
         self.dataDimensionality = dataDimensionality
+
+        # Save the type of model we are working with
+        self.modelType = modelType
 
         # Save the dictionary with the file paths
         self.pathsConfig = pathsConfig
@@ -256,20 +269,44 @@ class UrbanSound8kManager:
         initial_weights = compiledModel.get_weights()
 
         # Perform Cross-Validation
-        for testFold in tqdm(range(1, 11), desc="Cross-validating..."):
+        for testFold in range(1, 11):
             # Partition the data into train and validation
             X_train, y_train, X_val, y_val, X_test, y_test = self.getTrainTestSplitFold(
                 testFold=testFold
             )
 
-            # Train the model
-            history = compiledModel.fit(
-                X_train,
-                y_train,
-                validation_data=(X_val, y_val),
-                epochs=epochs,
-                callbacks=callbacks(),
-            )
+            # Get the current fold model's file path and history path
+            modelFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Fold-{testFold}"]["Model"]
+            historyFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Fold-{testFold}"]["History"]
+
+            # Check if the fold has already been computed
+            foldAlreadyComputed = os.path.exists(modelFilePath)
+
+            # Getting the model's current fold path and making sure it exists
+            modelFoldPath = Path("/".join(modelFilePath.split('/')[:-1]))
+            modelFoldPath.mkdir(parents=True, exist_ok=True)
+
+            # If we have not trained the model, then we need to
+            if not foldAlreadyComputed:
+                # Train the model
+                history = compiledModel.fit(
+                    X_train,
+                    y_train,
+                    validation_data=(X_val, y_val),
+                    epochs=epochs,
+                    callbacks=callbacks(),
+                )
+
+                # Save the history
+                saveObject(history, filePath=historyFilePath)
+
+                # Save the Model
+                saveObject(compiledModel, filePath=modelFilePath)
+
+            else:
+                # Load the previously computed fold history and trained model
+                history = loadObject(filePath=historyFilePath)
+                compiledModel = loadObject(filePath=modelFilePath)
 
             # Get predictions
             y_pred = np.argmax(compiledModel.predict(X_test), axis=1)
@@ -285,20 +322,28 @@ class UrbanSound8kManager:
                 targetLabels=self.classes_,
             )
 
-            # Set back the initial weights
-            compiledModel.set_weights(initial_weights)
+            # If we are training, then we need to set back the initial weights to the network
+            if not foldAlreadyComputed:
+                # Set back the initial weights
+                compiledModel.set_weights(initial_weights)
 
             # Append results
             histories.append(history)
             confusionMatrices.append(confusionMatrix)
 
+            break
+        
+        # Compute the global confusion Matrix
         globalConfusionMatrix = confusionMatrices[0]
         for m in confusionMatrices[1:]:
             globalConfusionMatrix += m
+
+        # Plot the Global Confusion Matrix
         plotConfusionMatrix(
             globalConfusionMatrix,
             title="Global Confusion Matrix",
             targetLabels=self.classes_,
         )
 
+        # Return the histories and the confusion matrices
         return histories, confusionMatrices
