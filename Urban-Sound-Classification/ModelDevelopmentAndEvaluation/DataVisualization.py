@@ -8,7 +8,10 @@ from sklearn.metrics import confusion_matrix, classification_report
 import scikit_posthocs as sp
 from sklearn.metrics import ConfusionMatrixDisplay
 
-def plotNetworkTrainingPerformance(confusionMatrix:np.ndarray, trainHistory:History=None, targetLabels=None) -> None:
+
+def plotNetworkTrainingPerformance(
+    confusionMatrix: np.ndarray, trainHistory: History, targetLabels=None
+) -> None:
     """
     # Description
         -> This function helps visualize the network's performance
@@ -24,30 +27,47 @@ def plotNetworkTrainingPerformance(confusionMatrix:np.ndarray, trainHistory:Hist
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
 
     # Plot training & validation accuracy values
-    ax1.plot(trainHistory['accuracy'], label='Train Accuracy')
-    ax1.plot(trainHistory['val_accuracy'], label='Validation Accuracy')
-    ax1.set_title('Model Accuracy')
-    ax1.set_ylabel('Accuracy')
-    ax1.set_xlabel('Epoch')
-    ax1.legend(loc='lower right')
+    ax1.plot(trainHistory["accuracy"], label="Train Accuracy")
+    ax1.plot(trainHistory["val_accuracy"], label="Validation Accuracy")
+    ax1.set_title("Model Accuracy")
+    ax1.set_ylabel("Accuracy")
+    ax1.set_xlabel("Epoch")
+    ax1.legend(loc="lower right")
 
     # Plot training & validation loss values
-    ax2.plot(trainHistory['loss'], label='Train Loss')
-    ax2.plot(trainHistory['val_loss'], label='Validation Loss')
-    ax2.set_title('Model Loss')
-    ax2.set_ylabel('Loss')
-    ax2.set_xlabel('Epoch')
-    ax2.legend(loc='upper right')
+    ax2.plot(trainHistory["loss"], label="Train Loss")
+    ax2.plot(trainHistory["val_loss"], label="Validation Loss")
+    ax2.set_title("Model Loss")
+    ax2.set_ylabel("Loss")
+    ax2.set_xlabel("Epoch")
+    ax2.legend(loc="upper right")
 
-    # Plot Confusion matrix
-    sns.heatmap(confusionMatrix, annot=True, fmt='d', cmap='Blues', ax=ax3,
-                xticklabels=targetLabels, yticklabels=targetLabels)
-    ax3.set_title('Confusion Matrix')
-    ax3.set_xlabel('Predicted Labels')
-    ax3.set_ylabel('True Labels')
+    # Plot Confusion Matrix
+    plotConfusionMatrix(confusionMatrix, targetLabels=targetLabels, ax=ax3)
 
     plt.tight_layout()
     plt.show()
+
+
+def plotConfusionMatrix(
+    confusionMatrix, title="Confusion Matrix", targetLabels=None, ax=None
+):
+    if ax is None:
+        fig, ax = plt.subplots()
+
+    # Plot Confusion matrix
+    sns.heatmap(
+        confusionMatrix,
+        annot=True,
+        fmt="d",
+        cmap="Blues",
+        ax=ax,
+        xticklabels=targetLabels,
+        yticklabels=targetLabels,
+    )
+    ax.set_title(title)
+    ax.set_xlabel("Predicted Labels")
+    ax.set_ylabel("True Labels")
 
 
 def plotCritialDifferenceDiagram(

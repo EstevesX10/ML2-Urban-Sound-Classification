@@ -9,7 +9,8 @@ from sklearn.metrics import confusion_matrix
 import keras
 from keras.src.callbacks.history import History
 
-from .DataVisualization import plotNetworkTrainingPerformance
+from .DataVisualization import plotNetworkTrainingPerformance, plotConfusionMatrix
+
 
 class UrbanSound8kManager:
     def __init__(
@@ -44,7 +45,8 @@ class UrbanSound8kManager:
 
         # Interpret the files to use depending on the data Dimensionality provided
         if self.dataDimensionality == "1D":
-            fileType = "1D-Processed-MFCCs"
+            # fileType = "1D-Processed-MFCCs"
+            fileType = "1D-Processed-Features"
 
         elif self.dataDimensionality == "2D":
             fileType = "2D-Raw-MFCCs"
@@ -107,7 +109,7 @@ class UrbanSound8kManager:
         numClasses = np.unique(df["target"]).size
 
         # Separate the data into train, validation and test
-        train_df = df[(df["fold"] != testFold) & (df["fold"] != (testFold + 1) % 10)]
+        train_df = df[(df["fold"] != testFold) & (df["fold"] != (testFold % 10 + 1))]
         validation_df = df[(df["fold"] == (testFold % 10 + 1))]
         test_df = df[(df["fold"] == testFold)]
 
@@ -134,7 +136,9 @@ class UrbanSound8kManager:
         validation_df = pd.concat(
             [
                 validation_df.drop(columns=["target"]),
-                pd.DataFrame(validationBinarizedTarget, columns=labelBinarizer.classes_),
+                pd.DataFrame(
+                    validationBinarizedTarget, columns=labelBinarizer.classes_
+                ),
             ],
             axis=1,
         )
@@ -152,19 +156,6 @@ class UrbanSound8kManager:
             featuresCols = train_df.columns[2 : len(train_df.columns) - numClasses]
             targetCols = train_df.columns[-numClasses:]
 
-            # Normalize the data
-            standardScaler = StandardScaler()
-            # standardScaler = MinMaxScaler(feature_range=(0, 1))
-
-            # Fit the scaler and transform the training data
-            train_df[featuresCols] = standardScaler.fit_transform(
-                train_df[featuresCols]
-            )
-
-            # Transform the validation and test sets according to the trained scaler
-            validation_df[featuresCols] = standardScaler.transform(validation_df[featuresCols])
-            test_df[featuresCols] = standardScaler.transform(test_df[featuresCols])
-
             # Split the data into X and y for train, validation and test sets
             X_train = train_df[featuresCols].to_numpy()
             y_train = train_df[targetCols].to_numpy()
@@ -174,6 +165,14 @@ class UrbanSound8kManager:
 
             X_test = test_df[featuresCols].to_numpy()
             y_test = test_df[targetCols].to_numpy()
+
+            # Normalize the data
+            mean = X_train.mean()
+            std = X_train.std()
+
+            X_train = (X_train - mean) / std
+            X_val = (X_val - mean) / std
+            X_test = (X_test - mean) / std
 
         elif self.dataDimensionality == "2D":
             # Define the columns of the features and the target
@@ -200,22 +199,8 @@ class UrbanSound8kManager:
             std = X_train.std()
 
             X_train = (X_train - mean) / std
+            X_val = (X_val - mean) / std
             X_test = (X_test - mean) / std
-
-            # Approach 1
-            # mean_time_step = X_train.mean(axis=1, keepdims=True)
-            # std_time_step = X_train.std(axis=1, keepdims=True)
-            # X_train = (X_train - mean_time_step) / std_time_step
-
-            # mean_time_step = X_test.mean(axis=1, keepdims=True)
-            # std_time_step = X_test.std(axis=1, keepdims=True)
-            # X_test = (X_test - mean_time_step) / std_time_step
-
-            # Approach 2
-            # scaler = MinMaxScaler()
-            # # Flatten array for scaling, then reshape back
-            # X_train = scaler.fit_transform(X_train.reshape(-1, X_train.shape[-1])).reshape(X_train.shape)
-            # X_test = scaler.transform(X_test.reshape(-1, X_test.shape[-1])).reshape(X_test.shape)
 
         elif self.dataDimensionality == "transfer":
             # Define the columns of the features and the target
@@ -244,7 +229,12 @@ class UrbanSound8kManager:
         # Return the sets computed
         return X_train, y_train, X_val, y_val, X_test, y_test
 
-    def cross_validate(self, compiledModel:keras.models.Sequential, epochs: int = 100, callbacks: list = None) -> Tuple[list[History], list[np.ndarray]]:
+    def cross_validate(
+        self,
+        compiledModel: keras.models.Sequential,
+        epochs: int = 100,
+        callbacks=lambda: [],
+    ) -> Tuple[list[History], list[np.ndarray]]:
         """
         # Description
             -> This method allows to perform cross-validation over the UrbanSound8k dataset
@@ -255,7 +245,7 @@ class UrbanSound8kManager:
         := param: callbacks - List of parameters that help monitor and modify the behavior of your model during training, evaluation and inference.
         := return: A list with the performance mestrics (History) of the model at each fold.
         """
-        
+
         # Initialize a list to store all the model's history for each fold
         histories = []
 
@@ -278,7 +268,7 @@ class UrbanSound8kManager:
                 y_train,
                 validation_data=(X_val, y_val),
                 epochs=epochs,
-                callbacks=callbacks,
+                callbacks=callbacks(),
             )
 
             # Get predictions
@@ -290,7 +280,9 @@ class UrbanSound8kManager:
 
             # Plotting model training performance
             plotNetworkTrainingPerformance(
-                confusionMatrix=confusionMatrix, trainHistory=history.history, targetLabels=self.classes_
+                confusionMatrix=confusionMatrix,
+                trainHistory=history.history,
+                targetLabels=self.classes_,
             )
 
             # Set back the initial weights
@@ -299,5 +291,14 @@ class UrbanSound8kManager:
             # Append results
             histories.append(history)
             confusionMatrices.append(confusionMatrix)
+
+        globalConfusionMatrix = confusionMatrices[0]
+        for m in confusionMatrices[1:]:
+            globalConfusionMatrix += m
+        plotConfusionMatrix(
+            globalConfusionMatrix,
+            title="Global Confusion Matrix",
+            targetLabels=self.classes_,
+        )
 
         return histories, confusionMatrices
