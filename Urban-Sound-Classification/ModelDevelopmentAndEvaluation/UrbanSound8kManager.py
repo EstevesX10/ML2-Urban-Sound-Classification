@@ -242,7 +242,7 @@ class UrbanSound8kManager:
         # Return the sets computed
         return X_train, y_train, X_val, y_val, X_test, y_test
 
-    def cross_validate(
+    def crossValidate(
         self,
         compiledModel: keras.models.Sequential,
         epochs: int = 100,
@@ -330,8 +330,6 @@ class UrbanSound8kManager:
             # Append results
             histories.append(history)
             confusionMatrices.append(confusionMatrix)
-
-            break
         
         # Compute the global confusion Matrix
         globalConfusionMatrix = confusionMatrices[0]
