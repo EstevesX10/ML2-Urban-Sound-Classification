@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 import numpy as np
 import pandas as pd
 import os
@@ -19,6 +19,7 @@ class UrbanSound8kManager:
         self,
         dataDimensionality: str = None,
         modelType: str = None,
+        testNumber: int = None,
         pathsConfig: dict = None,
     ) -> None:
         """
@@ -26,6 +27,8 @@ class UrbanSound8kManager:
             -> Constructor that helps define new instances of the Class UrbanSound8kManager.
         ------------------------------------------------------------------------------------
         := param: dataDimensionality - Interval considered to segment and process the audio's raw features (previously extracted).
+        := param: modelType - Name of the Model which is going to be used for training.
+        := param: testNumber - Number of the test the current model is going to perform.
         := param: pathsConfig - Dictionary used to store the paths to important files used throughout the project.
         := return: None, since we are only instanciating a class.
         """
@@ -40,6 +43,10 @@ class UrbanSound8kManager:
                 'Missing the Model Type to be later used for Trainning! [Use "CNN", "MLP" or "YAMNET" - depending on what model you plan to train on the selected data!]'
             )
 
+        # Verify if the test number was given
+        if testNumber is None:
+            raise ValueError("Missing the Model's test number!")
+
         # Check if a paths configuration was given
         if pathsConfig is None:
             raise ValueError("Missing a Dictionary with the Paths Configuration!")
@@ -49,6 +56,9 @@ class UrbanSound8kManager:
 
         # Save the type of model we are working with
         self.modelType = modelType
+
+        # Save the number of the test
+        self.testNumber = testNumber
 
         # Save the dictionary with the file paths
         self.pathsConfig = pathsConfig
@@ -294,7 +304,7 @@ class UrbanSound8kManager:
 
     def crossValidate(
         self,
-        compiledModel: keras.models.Sequential,
+        createModel: Callable[[], keras.models.Sequential],
         epochs: int = 100,
         callbacks=lambda: [],
     ) -> Tuple[list[History], list[np.ndarray]]:
@@ -315,11 +325,11 @@ class UrbanSound8kManager:
         # Initialize a list to store all the model's confusion matrices for each fold
         confusionMatrices = []
 
-        # Geting the model initial weights
-        initial_weights = compiledModel.get_weights()
-
         # Perform Cross-Validation
         for testFold in range(1, 11):
+            # Create new instance of the Model
+            compiledModel = createModel()
+
             # Partition the data into train and validation
             X_train, y_train, X_val, y_val, X_test, y_test = self.getTrainTestSplitFold(
                 testFold=testFold
@@ -328,10 +338,10 @@ class UrbanSound8kManager:
             # Get the current fold model's file path and history path
             modelFilePath = self.pathsConfig["ModelDevelopmentAndEvaluation"][
                 self.modelType
-            ][f"Fold-{testFold}"]["Model"]
+            ][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["Model"]
             historyFilePath = self.pathsConfig["ModelDevelopmentAndEvaluation"][
                 self.modelType
-            ][f"Fold-{testFold}"]["History"]
+            ][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["History"]
 
             # Check if the fold has already been computed
             foldAlreadyComputed = os.path.exists(modelFilePath)
@@ -372,18 +382,26 @@ class UrbanSound8kManager:
             # Plotting model training performance
             plotNetworkTrainingPerformance(
                 confusionMatrix=confusionMatrix,
+                title=f"[Test-{self.testNumber}] [{self.modelType}] Fold-{testFold}",
                 trainHistory=history.history,
                 targetLabels=self.classes_,
             )
 
-            # If we are training, then we need to set back the initial weights to the network
-            if not foldAlreadyComputed:
-                # Set back the initial weights
-                compiledModel.set_weights(initial_weights)
-
             # Append results
             histories.append(history)
             confusionMatrices.append(confusionMatrix)
+
+        # Return the histories and the confusion matrices
+        return histories, confusionMatrices
+
+    def plotGlobalConfusionMatrix(self, confusionMatrices: list[np.ndarray]) -> None:
+        """
+        # Description
+            -> This method helps to compute and display the global confusion matrix.
+        ----------------------------------------------------------------------------
+        := param: confusionMatrices - List with all the confusion matrices computed throughout all folds.
+        := return: None, since we are only plotting a confusion matrix.
+        """
 
         # Compute the global confusion Matrix
         globalConfusionMatrix = confusionMatrices[0]
@@ -396,6 +414,3 @@ class UrbanSound8kManager:
             title="Global Confusion Matrix",
             targetLabels=self.classes_,
         )
-
-        # Return the histories and the confusion matrices
-        return histories, confusionMatrices

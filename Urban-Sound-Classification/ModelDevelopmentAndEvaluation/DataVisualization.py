@@ -11,7 +11,7 @@ import scikit_posthocs as sp
 
 
 def plotNetworkTrainingPerformance(
-    confusionMatrix: np.ndarray, trainHistory: History, targetLabels=None
+    confusionMatrix: np.ndarray, title: str, trainHistory: History, targetLabels=None
 ) -> None:
     """
     # Description
@@ -26,6 +26,9 @@ def plotNetworkTrainingPerformance(
 
     # Create a figure with axis
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
+
+    # Set the overall title for the entire figure
+    fig.suptitle(title, fontsize=16, fontweight="bold")
 
     # Plot training & validation accuracy values
     ax1.plot(trainHistory["accuracy"], label="Train Accuracy")
