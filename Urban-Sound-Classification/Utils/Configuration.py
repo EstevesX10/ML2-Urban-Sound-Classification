@@ -22,6 +22,79 @@ def loadConfig() -> dict:
         "N_MFCC": 13,  # Number of Mel-Frequency Cepstral Coefficients (MFCCs) to be extracted
     }
 
+def createDatasetsFolderPaths(numberFolds:int) -> dict:
+    """
+    # Description
+        -> This function helps configure all the paths in which we are going to store the extracted features.
+    ---------------------------------------------------------------------------------------------------------
+    := param: numberFolds -  Number of folds that are going to be considered.
+    := return: Dictionary with all the datasets paths configured.
+    """
+    
+    # Create a main dictionary to store all the paths
+    datasetsPaths = {}
+
+    for foldIdx in range(1, numberFolds + 1):
+        # Define the paths for the current fold
+        currentFoldDatasetsPaths = {
+            # All the Available Features to process the Audio Samples
+            "All-Raw-Features": f"./Datasets/Fold-{foldIdx}/All-Raw-Features.pkl",
+
+            # Files to store 1-Dimensional Features
+            "1D-Raw-Features": f"./Datasets/Fold-{foldIdx}/1D-Raw-Features.pkl",
+            "1D-Processed-Features": f"./Datasets/Fold-{foldIdx}/1D-Processed-Features.pkl",
+            
+            # Files to store 2-Dimensional Features
+            "2D-Raw-Features": f"./Datasets/Fold-{foldIdx}/2D-Raw-Features.pkl",
+            "2D-Processed-Features": f"./Datasets/Fold-{foldIdx}/2D-Processed-Features.pkl",
+
+            # Files to store the MFCCs 
+            "2D-Raw-MFCCs": f"./Datasets/Fold-{foldIdx}/2D-Raw-MFCCs.pkl",
+            "1D-Processed-MFCCs": f"./Datasets/Fold-{foldIdx}/1D-Processed-MFCCs.pkl",
+        }
+
+        # Update the main dictionary
+        datasetsPaths.update({f"Fold-{foldIdx}":currentFoldDatasetsPaths})
+    
+    # Add the path for transfer learning
+    datasetsPaths.update({"transfer": "./Datasets/transfer.pkl"})
+   
+    # Return the dictionary with all the paths for the datasets
+    return datasetsPaths
+
+def createModelResultsFolderPaths(modelName:str, numberTests:int, numberFolds:int) -> dict:
+    """"
+    # Description
+        -> This function helps create all the paths to store the experimental results of a given model.
+    ---------------------------------------------------------------------------------------------------
+    := param: modelName - Name of the model.
+    := param: numberTests - Number of tests that are going to be performed on the model.
+    := param: numberFolds -  Number of folds that are going to be considered.
+    := return: Dictionary wtith all the proper paths formatted for the model's experimental results.
+    """
+
+    # Create a main dictionary to store all the paths for the results of a model
+    testsData = {}
+
+    # Iterate through the amount of tests to perform
+    for testIdx in range(1, numberTests + 1):
+        # Create a dictionary for the paths of the results from each fold for the current test
+        foldsData = {}
+        
+        # Iterate through each fold
+        for foldIdx in range(1, numberFolds + 1):
+            # Create the paths
+            foldsData.update({
+                f"Fold-{foldIdx}":{
+                    "History": f"./ExperimentalResults/ModelDevelopmentAndEvaluation/{modelName}/Test-{testIdx}/Fold-{foldIdx}/history.pkl",
+                    "Model": f"./ExperimentalResults/ModelDevelopmentAndEvaluation/{modelName}/Test-{testIdx}/Fold-{foldIdx}/model.pkl"
+                }
+            })
+        # Update the main dictionary
+        testsData.update({f"Test-{testIdx}":foldsData})
+    
+    # Return the Paths for the model experimental results
+    return testsData
 
 def loadPathsConfig() -> dict:
     """
@@ -32,296 +105,11 @@ def loadPathsConfig() -> dict:
     """
     return {
         "ExploratoryDataAnalysis": "./ExperimentalResults/ExploratoryDataAnalysis",
-        "Datasets": {
-            "Fold-1": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-1/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-1/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-1/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-1/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-1/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-1/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-1/1D-Processed-MFCCs.pkl",
-            },
-            "Fold-2": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-2/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-2/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-2/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-2/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-2/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-2/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-2/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-3": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-3/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-3/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-3/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-3/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-3/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-3/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-3/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-4": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-4/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-4/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-4/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-4/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-4/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-4/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-4/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-5": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-5/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-5/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-5/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-5/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-5/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-5/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-5/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-6": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-6/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-6/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-6/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-6/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-6/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-6/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-6/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-7": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-7/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-7/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-7/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-7/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-7/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-7/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-7/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-8": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-8/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-8/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-8/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-8/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-8/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-8/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-8/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-9": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-9/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-9/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-9/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-9/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-9/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-9/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-9/1D-Processed-MFCCs.pkl"
-            },
-            "Fold-10": {
-                # All the Available Features to process the Audio Samples
-                "All-Raw-Features": "./Datasets/Fold-10/All-Raw-Features.pkl",
-
-                # Files to store 1-Dimensional Features
-                "1D-Raw-Features": "./Datasets/Fold-10/1D-Raw-Features.pkl",
-                "1D-Processed-Features": "./Datasets/Fold-10/1D-Processed-Features.pkl",
-                
-                # Files to store 2-Dimensional Features
-                "2D-Raw-Features": "./Datasets/Fold-10/2D-Raw-Features.pkl",
-                "2D-Processed-Features": "./Datasets/Fold-10/2D-Processed-Features.pkl",
-
-                # Files to store the MFCCs 
-                "2D-Raw-MFCCs": "./Datasets/Fold-10/2D-Raw-MFCCs.pkl",
-                "1D-Processed-MFCCs": "./Datasets/Fold-10/1D-Processed-MFCCs.pkl"
-            },
-            "transfer": "./Datasets/transfer.pkl",
-        },
+        "Datasets": createDatasetsFolderPaths(numberFolds=10),
         "ModelDevelopmentAndEvaluation": {
-            "MLP": {
-                "Fold-1":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-1/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-1/model.pkl"
-                },
-                "Fold-2":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-2/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-2/model.pkl"
-                },
-                "Fold-3":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-3/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-3/model.pkl"
-                },
-                "Fold-4":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-4/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-4/model.pkl"
-                },
-                "Fold-5":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-5/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-5/model.pkl"
-                },
-                "Fold-6":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-6/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-6/model.pkl"
-                },
-                "Fold-7":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-7/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-7/model.pkl"
-                },
-                "Fold-8":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-8/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-8/model.pkl"
-                },
-                "Fold-9":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-9/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-9/model.pkl"
-                },
-                "Fold-10":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-10/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/MLP/Fold-10/model.pkl"
-                },
-            },
-            "CNN": {
-                "Fold-1":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-1/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-1/model.pkl"
-                },
-                "Fold-2":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-2/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-2/model.pkl"
-                },
-                "Fold-3":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-3/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-3/model.pkl"
-                },
-                "Fold-4":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-4/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-4/model.pkl"
-                },
-                "Fold-5":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-5/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-5/model.pkl"
-                },
-                "Fold-6":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-6/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-6/model.pkl"
-                },
-                "Fold-7":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-7/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-7/model.pkl"
-                },
-                "Fold-8":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-8/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-8/model.pkl"
-                },
-                "Fold-9":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-9/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-9/model.pkl"
-                },
-                "Fold-10":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-10/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/CNN/Fold-10/model.pkl"
-                },
-            },
-            "YAMNET": {
-                "Fold-1":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-1/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-1/model.pkl"
-                },
-                "Fold-2":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-2/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-2/model.pkl"
-                },
-                "Fold-3":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-3/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-3/model.pkl"
-                },
-                "Fold-4":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-4/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-4/model.pkl"
-                },
-                "Fold-5":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-5/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-5/model.pkl"
-                },
-                "Fold-6":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-6/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-6/model.pkl"
-                },
-                "Fold-7":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-7/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-7/model.pkl"
-                },
-                "Fold-8":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-8/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-8/model.pkl"
-                },
-                "Fold-9":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-9/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-9/model.pkl"
-                },
-                "Fold-10":{
-                    "History":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-10/history.pkl",
-                    "Model":"./ExperimentalResults/ModelDevelopmentAndEvaluation/YAMNET/Fold-10/model.pkl"
-                },
-            },
+            "MLP": createModelResultsFolderPaths(modelName="MLP", numberTests=1, numberFolds=10),
+            "CNN": createModelResultsFolderPaths(modelName="CNN", numberTests=1, numberFolds=10),
+            "YAMNET": createModelResultsFolderPaths(modelName="YAMNET", numberTests=1, numberFolds=10),
             "yamnet-train": "./ExperimentalResults/ModelDevelopmentAndEvaluation/yamnet/train.pkl",
             "yamnet-test": "./ExperimentalResults/ModelDevelopmentAndEvaluation/yamnet/test.pkl",
         },
