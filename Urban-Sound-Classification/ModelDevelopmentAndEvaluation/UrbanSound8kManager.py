@@ -8,14 +8,19 @@ from sklearn.preprocessing import LabelBinarizer, StandardScaler
 from sklearn.metrics import confusion_matrix
 
 from tensorflow import keras
-from tensorflow.keras.callbacks import History # type: ignore
+from tensorflow.keras.callbacks import History  # type: ignore
 
 from .DataVisualization import plotNetworkTrainingPerformance, plotConfusionMatrix
 from .pickleFileManagement import saveObject, loadObject
 
+
 class UrbanSound8kManager:
     def __init__(
-        self, dataDimensionality: str = None, modelType: str = None, testNumber:int = None, pathsConfig: dict = None
+        self,
+        dataDimensionality: str = None,
+        modelType: str = None,
+        testNumber: int = None,
+        pathsConfig: dict = None,
     ) -> None:
         """
         # Description
@@ -34,7 +39,9 @@ class UrbanSound8kManager:
 
         # Check if the modelType was passed on
         if modelType is None:
-            raise ValueError("Missing the Model Type to be later used for Trainning! [Use \"CNN\", \"MLP\" or \"YAMNET\" - depending on what model you plan to train on the selected data!]")
+            raise ValueError(
+                'Missing the Model Type to be later used for Trainning! [Use "CNN", "MLP" or "YAMNET" - depending on what model you plan to train on the selected data!]'
+            )
 
         # Verify if the test number was given
         if testNumber is None:
@@ -251,9 +258,53 @@ class UrbanSound8kManager:
         # Return the sets computed
         return X_train, y_train, X_val, y_val, X_test, y_test
 
+    def getAllFolds(self):
+        df = self.manageData()
+
+        # Evaluate the kind of data dimensionality provided and adapt the method to it
+        if self.dataDimensionality == "1D":
+            # Define the columns of the features and the target
+            featuresCols = df.columns[2:-1]
+            targetCols = df.columns[-1:]
+
+            # Split the data into X and y for train, validation and test sets
+            X = df[featuresCols].to_numpy()
+            y = df[targetCols].to_numpy()
+
+        elif self.dataDimensionality == "2D":
+            # Define the columns of the features and the target
+            featuresCols = "MFCC"
+            targetCols = df.columns[-1:]
+
+            # Split the data into X and y for train, validation and test sets
+            X = df[featuresCols]
+            y = df[targetCols].to_numpy()
+
+            # Stack the data
+            X = np.stack(X)
+
+        elif self.dataDimensionality == "transfer":
+            # Define the columns of the features and the target
+            featuresCols = "embedding"
+            targetCols = df.columns[-1:]
+
+            # Split the data into X and y for train, validation and test sets
+            X = df[featuresCols]
+            y = df[targetCols].to_numpy()
+
+            # Stack the data
+            X = np.stack(X)
+
+        else:
+            raise ValueError(
+                "[SOMETHING WENT WRONG] Invalid Data Dimensionality Selected!"
+            )
+
+        return X, y
+
     def crossValidate(
         self,
-        createModel:  Callable[[], keras.models.Sequential],
+        createModel: Callable[[], keras.models.Sequential],
         epochs: int = 100,
         callbacks=lambda: [],
     ) -> Tuple[list[History], list[np.ndarray]]:
@@ -285,14 +336,18 @@ class UrbanSound8kManager:
             )
 
             # Get the current fold model's file path and history path
-            modelFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["Model"]
-            historyFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["History"]
+            modelFilePath = self.pathsConfig["ModelDevelopmentAndEvaluation"][
+                self.modelType
+            ][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["Model"]
+            historyFilePath = self.pathsConfig["ModelDevelopmentAndEvaluation"][
+                self.modelType
+            ][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["History"]
 
             # Check if the fold has already been computed
             foldAlreadyComputed = os.path.exists(modelFilePath)
 
             # Getting the model's current fold path and making sure it exists
-            modelFoldPath = Path("/".join(modelFilePath.split('/')[:-1]))
+            modelFoldPath = Path("/".join(modelFilePath.split("/")[:-1]))
             modelFoldPath.mkdir(parents=True, exist_ok=True)
 
             # If we have not trained the model, then we need to
@@ -338,8 +393,8 @@ class UrbanSound8kManager:
 
         # Return the histories and the confusion matrices
         return histories, confusionMatrices
-    
-    def plotGlobalConfusionMatrix(self, confusionMatrices:list[np.ndarray]) -> None:
+
+    def plotGlobalConfusionMatrix(self, confusionMatrices: list[np.ndarray]) -> None:
         """
         # Description
             -> This method helps to compute and display the global confusion matrix.
