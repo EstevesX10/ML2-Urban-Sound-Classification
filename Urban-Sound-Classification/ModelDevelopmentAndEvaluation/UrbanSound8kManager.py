@@ -15,13 +15,15 @@ from .pickleFileManagement import saveObject, loadObject
 
 class UrbanSound8kManager:
     def __init__(
-        self, dataDimensionality: str = None, modelType: str = None, pathsConfig: dict = None
+        self, dataDimensionality: str = None, modelType: str = None, testNumber:int = None, pathsConfig: dict = None
     ) -> None:
         """
         # Description
             -> Constructor that helps define new instances of the Class UrbanSound8kManager.
         ------------------------------------------------------------------------------------
         := param: dataDimensionality - Interval considered to segment and process the audio's raw features (previously extracted).
+        := param: modelType - Name of the Model which is going to be used for training.
+        := param: testNumber - Number of the test the current model is going to perform.
         := param: pathsConfig - Dictionary used to store the paths to important files used throughout the project.
         := return: None, since we are only instanciating a class.
         """
@@ -34,6 +36,10 @@ class UrbanSound8kManager:
         if modelType is None:
             raise ValueError("Missing the Model Type to be later used for Trainning! [Use \"CNN\", \"MLP\" or \"YAMNET\" - depending on what model you plan to train on the selected data!]")
 
+        # Verify if the test number was given
+        if testNumber is None:
+            raise ValueError("Missing the Model's test number!")
+
         # Check if a paths configuration was given
         if pathsConfig is None:
             raise ValueError("Missing a Dictionary with the Paths Configuration!")
@@ -43,6 +49,9 @@ class UrbanSound8kManager:
 
         # Save the type of model we are working with
         self.modelType = modelType
+
+        # Save the number of the test
+        self.testNumber = testNumber
 
         # Save the dictionary with the file paths
         self.pathsConfig = pathsConfig
@@ -276,8 +285,8 @@ class UrbanSound8kManager:
             )
 
             # Get the current fold model's file path and history path
-            modelFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Fold-{testFold}"]["Model"]
-            historyFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Fold-{testFold}"]["History"]
+            modelFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["Model"]
+            historyFilePath = self.pathsConfig['ModelDevelopmentAndEvaluation'][self.modelType][f"Test-{self.testNumber}"][f"Fold-{testFold}"]["History"]
 
             # Check if the fold has already been computed
             foldAlreadyComputed = os.path.exists(modelFilePath)
