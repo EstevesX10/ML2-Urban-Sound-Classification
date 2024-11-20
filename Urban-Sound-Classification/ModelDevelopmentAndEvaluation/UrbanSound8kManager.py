@@ -279,6 +279,9 @@ class UrbanSound8kManager:
 
         # Perform Cross-Validation
         for testFold in range(1, 11):
+            # Clear session data
+            keras.backend.clear_session()
+
             # Partition the data into train and validation
             X_train, y_train, X_val, y_val, X_test, y_test = self.getTrainTestSplitFold(
                 testFold=testFold
@@ -327,6 +330,7 @@ class UrbanSound8kManager:
             # Plotting model training performance
             plotNetworkTrainingPerformance(
                 confusionMatrix=confusionMatrix,
+                title=f"[Test-{self.testNumber}] [{self.modelType}] Fold-{testFold}",
                 trainHistory=history.history,
                 targetLabels=self.classes_,
             )
@@ -339,7 +343,7 @@ class UrbanSound8kManager:
             # Append results
             histories.append(history)
             confusionMatrices.append(confusionMatrix)
-        
+
         # Return the histories and the confusion matrices
         return histories, confusionMatrices
     

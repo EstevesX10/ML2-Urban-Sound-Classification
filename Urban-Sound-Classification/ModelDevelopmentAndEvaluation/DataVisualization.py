@@ -1,16 +1,16 @@
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
+import matplotlib.pyplot as plt # type: ignore
+import seaborn as sns # type: ignore
 import keras
-from keras.src.callbacks.history import History
+from tensorflow.keras.callbacks import History # type: ignore
 from sklearn.metrics import confusion_matrix, classification_report
-import scikit_posthocs as sp
+import scikit_posthocs as sp # type: ignore
 from sklearn.metrics import ConfusionMatrixDisplay
 
 
 def plotNetworkTrainingPerformance(
-    confusionMatrix: np.ndarray, trainHistory: History, targetLabels=None
+    confusionMatrix: np.ndarray, title:str, trainHistory: History, targetLabels=None
 ) -> None:
     """
     # Description
@@ -25,6 +25,9 @@ def plotNetworkTrainingPerformance(
 
     # Create a figure with axis
     fig, (ax1, ax2, ax3) = plt.subplots(1, 3, figsize=(18, 5))
+
+    # Set the overall title for the entire figure
+    fig.suptitle(title, fontsize=16, fontweight='bold')
 
     # Plot training & validation accuracy values
     ax1.plot(trainHistory["accuracy"], label="Train Accuracy")
