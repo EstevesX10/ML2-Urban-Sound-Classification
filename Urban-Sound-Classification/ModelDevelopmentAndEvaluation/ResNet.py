@@ -3,7 +3,7 @@ import tensorflow as tf
 
 from tensorflow import keras
 from tensorflow.keras.layers import Layer # type: ignore
-from tensorflow.keras.layers import InputLayer, Conv2D, BatchNormalization # type: ignore
+from tensorflow.keras.layers import Input, Conv2D, BatchNormalization # type: ignore
 from tensorflow.keras.layers import MaxPooling2D, GlobalAveragePooling2D # type: ignore
 from tensorflow.keras.layers import Add, ReLU, Dense # type: ignore
 
@@ -74,8 +74,10 @@ class ResidualBlock(Layer):
 
 
 class ResNet(tf.keras.Model):
-    def __init__(self, num_classes=10):
+    def __init__(self, input_shape, num_classes=10):
         super().__init__()
+
+        self.inputLayer = Input(shape=input_shape)
 
         self.conv = Conv2D(
             filters=64, kernel_size=7, strides=2, padding="same", use_bias=False
@@ -107,21 +109,22 @@ class ResNet(tf.keras.Model):
         # Grab all the residual layers and convert them into a Sequencial Model
         return keras.Sequential(residualLayers)
 
-    def call(self, x: tf.Tensor, training=False):
-        # Go through the network's initial layers
-        x = self.conv(x)
-        x = self.bn(x)
-        x = self.relu(x)
-        x = self.pool(x)
+    def createResNet(self):
+        return keras.Sequential([
+            # Initial layers
+            self.inputLayer,
+            self.conv,
+            self.bn,
+            self.relu,
+            self.pool,
 
-        # Go through the residual blocks
-        x = self.layer1(x, training=training)
-        x = self.layer2(x, training=training)
-        x = self.layer3(x, training=training)
-        x = self.layer4(x, training=training)
+            # Residual blocks
+            self.layer1,
+            self.layer2,
+            self.layer3,
+            self.layer4,
 
-        # Apply Max Pool and apply a fully connected layer
-        x = self.globalAvgPool(x)
-        x = self.fullyConnectedLayer(x)
-
-        return x
+            # Apply Max Pool and apply a fully connected layer
+            self.globalAvgPool,
+            self.fullyConnectedLayer
+        ])
