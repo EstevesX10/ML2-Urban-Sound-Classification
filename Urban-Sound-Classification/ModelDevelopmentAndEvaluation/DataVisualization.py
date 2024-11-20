@@ -2,11 +2,12 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
-import keras
 from keras.src.callbacks.history import History
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.decomposition import PCA
+from sklearn.manifold import TSNE
+from sklearn.preprocessing import LabelEncoder, RobustScaler
+import matplotlib.pyplot as plt
 import scikit_posthocs as sp
-from sklearn.metrics import ConfusionMatrixDisplay
 
 
 def plotNetworkTrainingPerformance(
@@ -110,3 +111,53 @@ def plotCritialDifferenceDiagram(
         marker_props=marker,
         label_props=labelProps,
     )
+
+
+def plotScatterClass(
+    X: np.array, targets: np.array, algorithm: str = "PCA", randomState=42
+):
+    # Encode labels
+    encoder = LabelEncoder()
+    targetsEncoded = encoder.fit_transform(targets)
+
+    # Apply dimensionality reduction
+    if algorithm == "PCA":
+        X_embedded = PCA(n_components=2, random_state=randomState).fit_transform(X)
+    elif algorithm == "t-sne":
+        if X.shape[1] > 50:
+            # Reduce the number of dimensions to a reasonable amount
+            X = PCA(n_components=50, random_state=randomState).fit_transform(X)
+
+        X_embedded = TSNE(
+            n_components=2,
+            learning_rate="auto",
+            init="pca",
+            perplexity=30,
+            random_state=randomState,
+            n_jobs=-1,
+        ).fit_transform(X)
+    else:
+        raise ValueError(f"Invalid algorithm {algorithm}")
+
+    X_embedded = RobustScaler().fit_transform(X_embedded)
+
+    # Create the scatter plot
+    plt.figure(figsize=(8, 6))
+    colors = plt.cm.get_cmap("Paired", len(encoder.classes_))
+    plt.scatter(
+        X_embedded[:, 0], X_embedded[:, 1], c=targetsEncoded[:], cmap=colors, s=10
+    )
+
+    # Add labels, title, and legend
+    plt.xlabel(f"{algorithm} Dimension 1")
+    plt.ylabel(f"{algorithm} Dimension 1")
+    plt.title(f"{algorithm} Plot of High-Dimensional Data")
+
+    # Add a legend to show class mapping
+    import matplotlib.patches as mpatches
+
+    legend_labels = [
+        mpatches.Patch(color=colors(i), label=label)
+        for i, label in enumerate(encoder.classes_)
+    ]
+    plt.legend(handles=legend_labels, title="Class")
