@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Callable
 import numpy as np
 import pandas as pd
 import os
@@ -253,7 +253,7 @@ class UrbanSound8kManager:
 
     def crossValidate(
         self,
-        compiledModel: keras.models.Sequential,
+        createModel:  Callable[[], keras.models.Sequential],
         epochs: int = 100,
         callbacks=lambda: [],
     ) -> Tuple[list[History], list[np.ndarray]]:
@@ -274,13 +274,10 @@ class UrbanSound8kManager:
         # Initialize a list to store all the model's confusion matrices for each fold
         confusionMatrices = []
 
-        # Geting the model initial weights
-        initial_weights = compiledModel.get_weights()
-
         # Perform Cross-Validation
         for testFold in range(1, 11):
-            # Clear session data
-            keras.backend.clear_session()
+            # Create new instance of the Model
+            compiledModel = createModel()
 
             # Partition the data into train and validation
             X_train, y_train, X_val, y_val, X_test, y_test = self.getTrainTestSplitFold(
@@ -334,11 +331,6 @@ class UrbanSound8kManager:
                 trainHistory=history.history,
                 targetLabels=self.classes_,
             )
-
-            # If we are training, then we need to set back the initial weights to the network
-            if not foldAlreadyComputed:
-                # Set back the initial weights
-                compiledModel.set_weights(initial_weights)
 
             # Append results
             histories.append(history)
