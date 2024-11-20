@@ -331,6 +331,18 @@ class UrbanSound8kManager:
             histories.append(history)
             confusionMatrices.append(confusionMatrix)
         
+        # Return the histories and the confusion matrices
+        return histories, confusionMatrices
+    
+    def plotGlobalConfusionMatrix(self, confusionMatrices:list[np.ndarray]) -> None:
+        """
+        # Description
+            -> This method helps to compute and display the global confusion matrix.
+        ----------------------------------------------------------------------------
+        := param: confusionMatrices - List with all the confusion matrices computed throughout all folds.
+        := return: None, since we are only plotting a confusion matrix.
+        """
+
         # Compute the global confusion Matrix
         globalConfusionMatrix = confusionMatrices[0]
         for m in confusionMatrices[1:]:
@@ -342,6 +354,3 @@ class UrbanSound8kManager:
             title="Global Confusion Matrix",
             targetLabels=self.classes_,
         )
-
-        # Return the histories and the confusion matrices
-        return histories, confusionMatrices
