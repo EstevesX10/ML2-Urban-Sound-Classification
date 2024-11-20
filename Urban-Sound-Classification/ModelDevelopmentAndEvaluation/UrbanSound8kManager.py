@@ -7,8 +7,8 @@ from pathlib import Path
 from sklearn.preprocessing import LabelBinarizer, StandardScaler
 from sklearn.metrics import confusion_matrix
 
-import keras
-from keras.src.callbacks.history import History
+from tensorflow import keras
+from tensorflow.keras.callbacks import History # type: ignore
 
 from .DataVisualization import plotNetworkTrainingPerformance, plotConfusionMatrix
 from .pickleFileManagement import saveObject, loadObject

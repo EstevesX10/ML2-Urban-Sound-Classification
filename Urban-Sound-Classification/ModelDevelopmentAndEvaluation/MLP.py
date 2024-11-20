@@ -1,39 +1,56 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-import keras
-from keras import Sequential
-from keras.src.layers import (Input, Flatten, Conv1D, Conv2D, MaxPooling1D, BatchNormalization, Dense, Dropout)
+from tensorflow import keras
+from tensorflow.keras.layers import (Input, Flatten, Conv1D, Conv2D, MaxPooling1D, BatchNormalization, Dense, Dropout) # type: ignore
+from tensorflow.keras.regularizers import L2 # type: ignore
 
 class MLP(keras.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
     
     def createMLP(self, input_shape, numClasses=10):
-        return Sequential([
+        # return keras.Sequential([
+        #     Input(shape=input_shape),
+
+        #     # Dense(2048, activation='relu'),
+        #     # BatchNormalization(),
+        #     # Dropout(0.2),
+            
+        #     # Dense(1024, activation='relu'),
+        #     # BatchNormalization(),
+        #     # Dropout(0.2),
+            
+        #     Dense(512, activation='relu',kernel_regularizer=L2(1e-4)),
+        #     BatchNormalization(),
+        #     Dropout(0.2),
+            
+        #     # Dense(256, activation='relu'),
+        #     # BatchNormalization(),
+        #     # Dropout(0.2),
+            
+        #     Dense(128, activation='relu', kernel_regularizer=L2(1e-4)),
+        #     BatchNormalization(),
+        #     Dropout(0.2),
+            
+        #     # Dense(64, activation='relu'),
+        #     # BatchNormalization(),
+        #     # Dropout(0.2),
+            
+        #     Dense(numClasses, activation='softmax')
+        # ])
+    
+        return keras.Sequential([
             Input(shape=input_shape),
 
-            Dense(2048, activation='relu'),
+            Dense(80, activation='relu'),
             BatchNormalization(),
             Dropout(0.2),
             
-            Dense(1024, activation='relu'),
+            Dense(40, activation='relu'),
             BatchNormalization(),
             Dropout(0.2),
             
-            Dense(512, activation='relu'),
-            BatchNormalization(),
-            Dropout(0.2),
-            
-            Dense(256, activation='relu'),
-            BatchNormalization(),
-            Dropout(0.2),
-            
-            Dense(128, activation='relu'),
-            BatchNormalization(),
-            Dropout(0.2),
-            
-            Dense(64, activation='relu'),
+            Dense(20, activation='relu'),
             BatchNormalization(),
             Dropout(0.2),
             

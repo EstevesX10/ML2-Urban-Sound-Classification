@@ -1,17 +1,15 @@
 import numpy as np
 import tensorflow as tf
-import keras
-from keras import Sequential
-from keras.src.layers import Layer
-from keras.src.layers import InputLayer, Conv2D, BatchNormalization
-from keras.src.layers import MaxPooling2D, GlobalAveragePooling2D
-from keras.src.layers import Add, ReLU, Dense
 
+from tensorflow import keras
+from tensorflow.keras.layers import Layer # type: ignore
+from tensorflow.keras.layers import InputLayer, Conv2D, BatchNormalization # type: ignore
+from tensorflow.keras.layers import MaxPooling2D, GlobalAveragePooling2D # type: ignore
+from tensorflow.keras.layers import Add, ReLU, Dense # type: ignore
 
 class ResidualBlock(Layer):
     def __init__(self, filters, kernel_size=3, stride=1):
         super().__init__()
-
         self.stride = stride
         self.filters = filters
 
@@ -107,7 +105,7 @@ class ResNet(tf.keras.Model):
             residualLayers.append(ResidualBlock(filters=filters, stride=1))
 
         # Grab all the residual layers and convert them into a Sequencial Model
-        return Sequential(residualLayers)
+        return keras.Sequential(residualLayers)
 
     def call(self, x: tf.Tensor, training=False):
         # Go through the network's initial layers

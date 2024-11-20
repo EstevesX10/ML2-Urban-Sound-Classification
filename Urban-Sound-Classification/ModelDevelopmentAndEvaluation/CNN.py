@@ -1,16 +1,14 @@
 import numpy as np
 import pandas as pd
-import tensorflow as tf
-import keras
-from keras import Sequential
-from keras.src.layers import (Input, BatchNormalization, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dense, Dropout, LeakyReLU, SpatialDropout2D, GlobalAveragePooling2D)
+from tensorflow import keras
+from tensorflow.keras.layers import (Input, BatchNormalization, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dense, Dropout, LeakyReLU, SpatialDropout2D, GlobalAveragePooling2D) # type: ignore
 
 class CNN(keras.Model):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
     def create1DCNN(self, input_shape, numClasses=10):
-        return Sequential([
+        return keras.Sequential([
             Input(shape=input_shape),
             Conv1D(filters=64, kernel_size=3, strides=1, padding='same', activation='relu'),
             MaxPooling1D(pool_size=2),
@@ -30,7 +28,7 @@ class CNN(keras.Model):
 
     # Architecture used in the "An Analysis of Audio Classification Techniques using Deep Learning Architectures" Paper
     def create2DCNN(self, input_shape, numClasses=10):
-        # return Sequential([
+        # return keras.Sequential([
         #     Input(shape=input_shape),
         #     Conv2D(filters=64, kernel_size=(3, 3), strides=(1, 1), padding='same', activation='relu'),
         #     MaxPooling2D(pool_size=(2, 2)),
@@ -48,24 +46,45 @@ class CNN(keras.Model):
         #     Dense(units=numClasses, activation='softmax')
         # ])
 
-        return Sequential([
+        return keras.Sequential([
             Input(shape=input_shape),
-            Conv2D(filters=32, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
-            BatchNormalization(),
-            SpatialDropout2D(rate=0.07),
 
-            Conv2D(filters=32, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
+            Conv2D(32, (3, 3), activation='relu', padding='same'),
             BatchNormalization(),
-            MaxPooling2D(pool_size=(2, 2)),
-            SpatialDropout2D(rate=0.07),
-
-            Conv2D(filters=64, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
+            MaxPooling2D((2, 2)),
+            
+            Conv2D(64, (3, 3), activation='relu', padding='same'),
             BatchNormalization(),
-            SpatialDropout2D(rate=0.14),
-
-            Conv2D(filters=64, kernel_size=(2, 2), activation=LeakyReLU(alpha=0.1)),
+            MaxPooling2D((2, 2)),
+            
+            Conv2D(128, (3, 3), activation='relu', padding='same'),
             BatchNormalization(),
-            GlobalAveragePooling2D(),
-
+            MaxPooling2D((2, 2)),
+            
+            Flatten(),
+            Dense(128, activation='relu'),
+            Dropout(0.5),
             Dense(units=numClasses, activation='softmax')
         ])
+
+        # return keras.Sequential([
+        #     Input(shape=input_shape),
+        #     Conv2D(filters=32, kernel_size=(2, 5), activation=LeakyReLU(alpha=0.1)),
+        #     BatchNormalization(),
+        #     SpatialDropout2D(rate=0.07),
+
+        #     Conv2D(filters=32, kernel_size=(2, 5), activation=LeakyReLU(alpha=0.1)),
+        #     BatchNormalization(),
+        #     MaxPooling2D(pool_size=(2, 2)),
+        #     SpatialDropout2D(rate=0.07),
+
+        #     Conv2D(filters=64, kernel_size=(2, 5), activation=LeakyReLU(alpha=0.1)),
+        #     BatchNormalization(),
+        #     SpatialDropout2D(rate=0.14),
+
+        #     Conv2D(filters=64, kernel_size=(2, 5), activation=LeakyReLU(alpha=0.1)),
+        #     BatchNormalization(),
+        #     GlobalAveragePooling2D(),
+
+        #     Dense(units=numClasses, activation='softmax')
+        # ])
