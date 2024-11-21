@@ -286,7 +286,7 @@ class UrbanSound8kManager:
         elif self.dataDimensionality == "transfer":
             # Define the columns of the features and the target
             featuresCols = "embedding"
-            targetCols = df.columns[-1:]
+            targetCols = "target"
 
             # Split the data into X and y for train, validation and test sets
             X = df[featuresCols]
@@ -306,6 +306,8 @@ class UrbanSound8kManager:
         self,
         createModel: Callable[[], keras.models.Sequential],
         epochs: int = 100,
+        n_iter: int = 10,
+        batchSize: int = 32,
         callbacks=lambda: [],
     ) -> Tuple[list[History], list[np.ndarray]]:
         """
@@ -315,9 +317,12 @@ class UrbanSound8kManager:
         ------------------------------------------------------------------------------------
         := param: compiledModel - Keras sequential model previously compiled.
         := param: epochs - Number of iterations to train the model at each fold.
+        := param: n_iter - Number of iterations to cross-validate
         := param: callbacks - List of parameters that help monitor and modify the behavior of your model during training, evaluation and inference.
         := return: A list with the performance mestrics (History) of the model at each fold.
         """
+
+        assert 0 < n_iter <= 10, f"invalid number of iterations: {n_iter}"
 
         # Initialize a list to store all the model's history for each fold
         histories = []
@@ -326,7 +331,7 @@ class UrbanSound8kManager:
         confusionMatrices = []
 
         # Perform Cross-Validation
-        for testFold in range(1, 11):
+        for testFold in range(1, n_iter + 1):
             # Create new instance of the Model
             compiledModel = createModel()
 
@@ -357,6 +362,7 @@ class UrbanSound8kManager:
                     X_train,
                     y_train,
                     validation_data=(X_val, y_val),
+                    batch_size=batchSize,
                     epochs=epochs,
                     callbacks=callbacks(),
                 )
@@ -366,6 +372,9 @@ class UrbanSound8kManager:
 
                 # Save the Model
                 saveObject(compiledModel, filePath=modelFilePath)
+
+                # Clear session
+                keras.backend.clear_session()
 
             else:
                 # Load the previously computed fold history and trained model

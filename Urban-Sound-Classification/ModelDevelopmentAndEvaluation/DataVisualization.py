@@ -7,6 +7,7 @@ from sklearn.decomposition import PCA
 from sklearn.manifold import TSNE
 from sklearn.preprocessing import LabelEncoder, RobustScaler
 import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
 import scikit_posthocs as sp
 
 
@@ -117,7 +118,11 @@ def plotCritialDifferenceDiagram(
 
 
 def plotScatterClass(
-    X: np.array, targets: np.array, algorithm: str = "PCA", randomState=42
+    X: np.array,
+    targets: np.array,
+    xLogScale: bool = False,
+    algorithm: str = "PCA",
+    randomState=42,
 ):
     # Encode labels
     encoder = LabelEncoder()
@@ -127,9 +132,9 @@ def plotScatterClass(
     if algorithm == "PCA":
         X_embedded = PCA(n_components=2, random_state=randomState).fit_transform(X)
     elif algorithm == "t-sne":
-        if X.shape[1] > 50:
+        if X.shape[1] > 10:
             # Reduce the number of dimensions to a reasonable amount
-            X = PCA(n_components=50, random_state=randomState).fit_transform(X)
+            X = PCA(n_components=10, random_state=randomState).fit_transform(X)
 
         X_embedded = TSNE(
             n_components=2,
@@ -156,9 +161,10 @@ def plotScatterClass(
     plt.ylabel(f"{algorithm} Dimension 1")
     plt.title(f"{algorithm} Plot of High-Dimensional Data")
 
-    # Add a legend to show class mapping
-    import matplotlib.patches as mpatches
+    if xLogScale:
+        plt.xscale("log")
 
+    # Add a legend to show class mapping
     legend_labels = [
         mpatches.Patch(color=colors(i), label=label)
         for i, label in enumerate(encoder.classes_)

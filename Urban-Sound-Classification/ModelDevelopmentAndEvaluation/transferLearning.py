@@ -3,9 +3,12 @@ import librosa as libr
 from Utils.Configuration import loadConfig
 from DataPreProcessing.AudioManagement import formatFilePath
 import numpy as np
+from typing import List
 
 import tensorflow as tf
 import tensorflow_hub as hub
+
+YAMNET_SAMPLE_RATE = 16_000
 
 
 # TODO: we probably dont need this
@@ -32,7 +35,7 @@ def createEmbeddings(df: pd.DataFrame) -> tf.data.Dataset:
     @tf.py_function(Tout=(tf.float32, tf.string, tf.int64))
     def load_wav(filename, label, fold):
         wav, samplingRate = libr.load(
-            filename.numpy(), duration=config["DURATION"], sr=config["SAMPLE_RATE"]
+            filename.numpy(), duration=config["DURATION"], sr=YAMNET_SAMPLE_RATE
         )
 
         return wav, label, fold
@@ -96,7 +99,7 @@ def createEmbeddingsFaster(df: pd.DataFrame) -> tf.data.Dataset:
     results = {"embedding": [], "target": [], "fold": []}
     for _, row in df.iterrows():
         wav, samplingRate = libr.load(
-            row["full_filename"], duration=config["DURATION"], sr=config["SAMPLE_RATE"]
+            row["full_filename"], duration=config["DURATION"], sr=YAMNET_SAMPLE_RATE
         )
 
         scores, embeddings, spectrogram = yamnet_model(wav)
@@ -109,14 +112,20 @@ def createEmbeddingsFaster(df: pd.DataFrame) -> tf.data.Dataset:
     return pd.DataFrame(results)
 
 
-def createTransferLearning(numClasses=10):
+def createTransferLearning(
+    hiddenLayers: List[int], dropout: float = 0.0, numClasses=10
+):
+    layers = [
+        tf.keras.layers.Input(shape=(1024,), dtype=tf.float32, name="input_embedding")
+    ]
+
+    for size in hiddenLayers:
+        layers.append(tf.keras.layers.Dense(size, activation="relu"))
+        layers.append(tf.keras.layers.Dropout(dropout))
+
+    layers.append(tf.keras.layers.Dense(numClasses, activation="softmax"))
+
     return tf.keras.Sequential(
-        [
-            tf.keras.layers.Input(
-                shape=(1024,), dtype=tf.float32, name="input_embedding"
-            ),
-            tf.keras.layers.Dense(512, activation="relu"),
-            tf.keras.layers.Dense(numClasses),
-        ],
+        layers,
         name="classifier",
     )
