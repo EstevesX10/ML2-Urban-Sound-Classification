@@ -9,10 +9,11 @@ from sklearn.metrics import confusion_matrix
 
 from tensorflow import keras
 from tensorflow.keras.callbacks import History  # type: ignore
+from tensorflow.keras.models import load_model # type: ignore
+from tensorflow.keras.utils import get_custom_objects # type: ignore
 
 from .DataVisualization import plotNetworkTrainingPerformance, plotConfusionMatrix
 from .pickleFileManagement import saveObject, loadObject
-
 
 class UrbanSound8kManager:
     def __init__(
@@ -314,6 +315,7 @@ class UrbanSound8kManager:
     def crossValidate(
         self,
         createModel: Callable[[], keras.models.Sequential],
+        numberFolds : int = 10,
         epochs: int = 100,
         callbacks=lambda: [],
     ) -> Tuple[list[History], list[np.ndarray]]:
@@ -323,6 +325,7 @@ class UrbanSound8kManager:
             given a compiled Model.
         ------------------------------------------------------------------------------------
         := param: compiledModel - Keras sequential model previously compiled.
+        := param: numberFolds - Number of Folds to perform the CV on.
         := param: epochs - Number of iterations to train the model at each fold.
         := param: callbacks - List of parameters that help monitor and modify the behavior of your model during training, evaluation and inference.
         := return: A list with the performance mestrics (History) of the model at each fold.
@@ -335,7 +338,7 @@ class UrbanSound8kManager:
         confusionMatrices = []
 
         # Perform Cross-Validation
-        for testFold in range(1, 11):
+        for testFold in range(1, numberFolds + 1):
             # Create new instance of the Model
             compiledModel = createModel()
 
@@ -374,13 +377,15 @@ class UrbanSound8kManager:
                 saveObject(history, filePath=historyFilePath)
 
                 # Save the Model
-                saveObject(compiledModel, filePath=modelFilePath)
+                compiledModel.save(modelFilePath)
 
             else:
-                # Load the previously computed fold history and trained model
+                # Load the previously computed fold history
                 history = loadObject(filePath=historyFilePath)
-                compiledModel = loadObject(filePath=modelFilePath)
 
+                # Load the model
+                compiledModel = load_model(modelFilePath)
+            
             # Get predictions
             y_pred = np.argmax(compiledModel.predict(X_test), axis=1)
             y_true = np.argmax(y_test, axis=1)
