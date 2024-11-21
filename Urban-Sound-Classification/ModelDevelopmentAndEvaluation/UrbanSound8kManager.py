@@ -258,7 +258,16 @@ class UrbanSound8kManager:
         # Return the sets computed
         return X_train, y_train, X_val, y_val, X_test, y_test
 
-    def getAllFolds(self):
+    def getAllFolds(self) -> Tuple[np.ndarray, np.ndarray]:
+        """
+        # Description
+            -> This method helps get all the data regarding all folds 
+        which is going to be used to create the t-SNE plot.
+        -------------------------------------------------------------
+        := return: X and y sets.
+        """
+        
+        # Manage data
         df = self.manageData()
 
         # Evaluate the kind of data dimensionality provided and adapt the method to it
