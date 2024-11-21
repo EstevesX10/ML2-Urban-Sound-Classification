@@ -113,14 +113,18 @@ def createEmbeddingsFaster(df: pd.DataFrame) -> tf.data.Dataset:
 
 
 def createTransferLearning(
-    hiddenLayers: List[int], dropout: float = 0.0, numClasses=10
+    hiddenLayers: List[int], dropout: float = 0.0, regularization=None, numClasses=10
 ):
     layers = [
         tf.keras.layers.Input(shape=(1024,), dtype=tf.float32, name="input_embedding")
     ]
 
     for size in hiddenLayers:
-        layers.append(tf.keras.layers.Dense(size, activation="relu"))
+        layers.append(
+            tf.keras.layers.Dense(
+                size, activation="relu", kernel_regularizer=regularization
+            )
+        )
         layers.append(tf.keras.layers.Dropout(dropout))
 
     layers.append(tf.keras.layers.Dense(numClasses, activation="softmax"))
