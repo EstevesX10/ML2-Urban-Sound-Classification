@@ -6,11 +6,14 @@ from tensorflow.keras.layers import Layer # type: ignore
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization # type: ignore
 from tensorflow.keras.layers import MaxPooling2D, GlobalAveragePooling2D # type: ignore
 from tensorflow.keras.layers import Add, ReLU, Dense # type: ignore
+from tensorflow.keras.utils import register_keras_serializable # type: ignore
 
+@register_keras_serializable()
 class ResidualBlock(Layer):
-    def __init__(self, filters, kernel_size=3, stride=1):
-        super().__init__()
+    def __init__(self, filters, kernel_size=3, stride=1, **kwargs):
+        super(ResidualBlock, self).__init__(**kwargs)
         self.stride = stride
+        self.kernel_size = kernel_size
         self.filters = filters
 
         # First Convolutional Layer with Batch Normalization and Relu
@@ -72,6 +75,18 @@ class ResidualBlock(Layer):
 
         return x
 
+    def get_config(self):
+        config = super().get_config()
+        config.update({
+            'filters': self.filters,
+            'kernel_size': self.kernel_size,
+            'stride': self.stride
+        })
+        return config
+
+    @classmethod
+    def from_config(cls, config):
+        return cls(**config)
 
 class ResNet(tf.keras.Model):
     def __init__(self, input_shape, num_classes=10):

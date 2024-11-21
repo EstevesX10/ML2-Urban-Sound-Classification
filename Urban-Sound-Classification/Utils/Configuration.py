@@ -87,7 +87,7 @@ def createModelResultsFolderPaths(modelName:str, numberTests:int, numberFolds:in
             foldsData.update({
                 f"Fold-{foldIdx}":{
                     "History": f"./ExperimentalResults/ModelPerformanceResults/{modelName}/Test-{testIdx}/Fold-{foldIdx}/history.pkl",
-                    "Model": f"./ExperimentalResults/ModelPerformanceResults/{modelName}/Test-{testIdx}/Fold-{foldIdx}/model.pkl"
+                    "Model": f"./ExperimentalResults/ModelPerformanceResults/{modelName}/Test-{testIdx}/Fold-{foldIdx}/model.keras"
                 }
             })
         # Update the main dictionary
