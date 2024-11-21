@@ -19,7 +19,7 @@ from .pickleFileManagement import saveObject, loadObject
 class UrbanSound8kManager:
     def __init__(
         self,
-        dataDimensionality: str = None,
+        featuresToUse: str = None,
         modelType: str = None,
         testNumber: int = None,
         pathsConfig: dict = None,
@@ -28,7 +28,7 @@ class UrbanSound8kManager:
         # Description
             -> Constructor that helps define new instances of the Class UrbanSound8kManager.
         ------------------------------------------------------------------------------------
-        := param: dataDimensionality - Interval considered to segment and process the audio's raw features (previously extracted).
+        := param: featuresToUse - Features to consider use (from the ones previously extracted).
         := param: modelType - Name of the Model which is going to be used for training.
         := param: testNumber - Number of the test the current model is going to perform.
         := param: pathsConfig - Dictionary used to store the paths to important files used throughout the project.
@@ -36,7 +36,7 @@ class UrbanSound8kManager:
         """
 
         # Check if a DataDimensionality was given
-        if dataDimensionality is None:
+        if featuresToUse is None:
             raise ValueError("Missing the Value for Data Dimensionality!")
 
         # Check if the modelType was passed on
@@ -54,7 +54,7 @@ class UrbanSound8kManager:
             raise ValueError("Missing a Dictionary with the Paths Configuration!")
 
         # Save the data dimensionality
-        self.dataDimensionality = dataDimensionality
+        self.featuresToUse = featuresToUse
 
         # Save the type of model we are working with
         self.modelType = modelType
@@ -74,34 +74,23 @@ class UrbanSound8kManager:
         := return: Train and Test Pandas DataFrames.
         """
 
-        # Interpret the files to use depending on the data Dimensionality provided
-        if self.dataDimensionality == "1D":
-            # fileType = "1D-Processed-MFCCs"
-            fileType = "1D-Processed-Features"
-
-        elif self.dataDimensionality == "2D":
-            fileType = "2D-Raw-MFCCs"
-
-        elif self.dataDimensionality == "transfer":
-            fileType = "yamnet"
-
-        else:
+        if self.featuresToUse not in self.pathsConfig["Datasets"]["Fold-1"].keys():
             # Invalid Data Dimensionality
             raise ValueError(
-                "Invalid Data Dimensionality Selected! (Please choose from ['1D', '2D'])"
+                f'Invalid Features Selected! (Please choose from {self.pathsConfig["Datasets"]["Fold-1"].keys()})'
             )
 
         # Create a dataframe with all the collected data across all folds
         df = None
 
         # Iterate through the datasets' folds
-        if self.dataDimensionality == "transfer":
-            df = pd.read_pickle(self.pathsConfig["Datasets"]["transfer"])
+        if self.featuresToUse == "transfer":
+            df = pd.read_pickle(self.pathsConfig["Datasets"][self.featuresToUse])
         else:
             for fold in range(1, 11):
                 # Load the current fold dataframe
                 fold_df = pd.read_pickle(
-                    self.pathsConfig["Datasets"][f"Fold-{fold}"][fileType]
+                    self.pathsConfig["Datasets"][f"Fold-{fold}"][self.featuresToUse]
                 )
 
                 # If the DataFrame has yet to be created, then we initialize it
@@ -182,7 +171,7 @@ class UrbanSound8kManager:
         )
 
         # Evaluate the kind of data dimensionality provided and adapt the method to it
-        if self.dataDimensionality == "1D":
+        if self.featuresToUse == "1D-MFCCs" or self.featuresToUse == "1D-Processed-Features":
             # Define the columns of the features and the target
             featuresCols = train_df.columns[2 : len(train_df.columns) - numClasses]
             targetCols = train_df.columns[-numClasses:]
@@ -205,7 +194,7 @@ class UrbanSound8kManager:
             X_val = (X_val - mean) / std
             X_test = (X_test - mean) / std
 
-        elif self.dataDimensionality == "2D":
+        elif self.featuresToUse == "2D-Raw-MFCCs":
             # Define the columns of the features and the target
             featuresCols = "MFCC"
             targetCols = train_df.columns[-numClasses:]
@@ -233,7 +222,7 @@ class UrbanSound8kManager:
             X_val = (X_val - mean) / std
             X_test = (X_test - mean) / std
 
-        elif self.dataDimensionality == "transfer":
+        elif self.featuresToUse == "transfer":
             # Define the columns of the features and the target
             featuresCols = "embedding"
             targetCols = train_df.columns[-numClasses:]
@@ -273,7 +262,7 @@ class UrbanSound8kManager:
         df = self.manageData()
 
         # Evaluate the kind of data dimensionality provided and adapt the method to it
-        if self.dataDimensionality == "1D":
+        if self.featuresToUse == "1D":
             # Define the columns of the features and the target
             featuresCols = df.columns[2:-1]
             targetCols = df.columns[-1:]
@@ -282,7 +271,7 @@ class UrbanSound8kManager:
             X = df[featuresCols].to_numpy()
             y = df[targetCols].to_numpy()
 
-        elif self.dataDimensionality == "2D":
+        elif self.featuresToUse == "2D":
             # Define the columns of the features and the target
             featuresCols = "MFCC"
             targetCols = df.columns[-1:]
@@ -294,7 +283,7 @@ class UrbanSound8kManager:
             # Stack the data
             X = np.stack(X)
 
-        elif self.dataDimensionality == "transfer":
+        elif self.featuresToUse == "transfer":
             # Define the columns of the features and the target
             featuresCols = "embedding"
             targetCols = "target"
@@ -344,7 +333,7 @@ class UrbanSound8kManager:
         # Perform Cross-Validation
         for testFold in range(1, numberFolds + 1):
             # Create new instance of the Model
-            compiledModel = createModel()
+            compiledModel = createModel(testNumber=self.testNumber)
 
             # Partition the data into train and validation
             X_train, y_train, X_val, y_val, X_test, y_test = self.getTrainTestSplitFold(
