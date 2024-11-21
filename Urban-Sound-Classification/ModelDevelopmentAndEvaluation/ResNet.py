@@ -168,3 +168,20 @@ class ResNet(tf.keras.Model):
                 self.globalAvgPool,
                 self.fullyConnectedLayer
             ])
+        elif testNumber == 3:
+            return keras.Sequential([
+                # Initial layers
+                self.inputLayer,
+                self.conv,
+                self.bn,
+                self.relu,
+                self.pool,
+
+                # Residual blocks
+                self.layer1,
+                Dropout(0.5),
+
+                # Apply Max Pool and apply a fully connected layer
+                self.globalAvgPool,
+                self.fullyConnectedLayer
+            ])

@@ -171,7 +171,7 @@ class UrbanSound8kManager:
         )
 
         # Evaluate the kind of data dimensionality provided and adapt the method to it
-        if self.featuresToUse == "1D-MFCCs" or self.featuresToUse == "1D-Processed-Features":
+        if self.featuresToUse == "1D-Processed-MFCCs" or self.featuresToUse == "1D-Processed-Features":
             # Define the columns of the features and the target
             featuresCols = train_df.columns[2 : len(train_df.columns) - numClasses]
             targetCols = train_df.columns[-numClasses:]

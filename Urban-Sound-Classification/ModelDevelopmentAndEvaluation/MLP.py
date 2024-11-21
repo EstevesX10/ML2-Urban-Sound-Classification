@@ -33,17 +33,21 @@ class MLP(keras.Model):
              return keras.Sequential([
                 Input(shape=input_shape),
 
+                Dense(512, activation='relu'),
+                BatchNormalization(),
+                Dropout(0.5),
+
                 Dense(256, activation='relu'),
                 BatchNormalization(),
-                Dropout(0.2),
+                Dropout(0.5),
                 
                 Dense(128, activation='relu'),
                 BatchNormalization(),
-                Dropout(0.2),
+                Dropout(0.5),
                 
                 Dense(64, activation='relu'),
                 BatchNormalization(),
-                Dropout(0.2),
+                Dropout(0.5),
                 
                 Dense(numClasses, activation='softmax')
             ])
