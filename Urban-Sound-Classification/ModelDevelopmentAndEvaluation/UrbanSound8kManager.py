@@ -9,11 +9,12 @@ from sklearn.metrics import confusion_matrix
 
 from tensorflow import keras
 from tensorflow.keras.callbacks import History  # type: ignore
-from tensorflow.keras.models import load_model # type: ignore
-from tensorflow.keras.utils import get_custom_objects # type: ignore
+from tensorflow.keras.models import load_model  # type: ignore
+from tensorflow.keras.utils import get_custom_objects  # type: ignore
 
 from .DataVisualization import plotNetworkTrainingPerformance, plotConfusionMatrix
 from .pickleFileManagement import saveObject, loadObject
+
 
 class UrbanSound8kManager:
     def __init__(
@@ -262,12 +263,12 @@ class UrbanSound8kManager:
     def getAllFolds(self) -> Tuple[np.ndarray, np.ndarray]:
         """
         # Description
-            -> This method helps get all the data regarding all folds 
+            -> This method helps get all the data regarding all folds
         which is going to be used to create the t-SNE plot.
         -------------------------------------------------------------
         := return: X and y sets.
         """
-        
+
         # Manage data
         df = self.manageData()
 
@@ -296,7 +297,7 @@ class UrbanSound8kManager:
         elif self.dataDimensionality == "transfer":
             # Define the columns of the features and the target
             featuresCols = "embedding"
-            targetCols = df.columns[-1:]
+            targetCols = "target"
 
             # Split the data into X and y for train, validation and test sets
             X = df[featuresCols]
@@ -315,8 +316,9 @@ class UrbanSound8kManager:
     def crossValidate(
         self,
         createModel: Callable[[], keras.models.Sequential],
-        numberFolds : int = 10,
+        numberFolds: int = 10,
         epochs: int = 100,
+        batchSize: int = 32,
         callbacks=lambda: [],
     ) -> Tuple[list[History], list[np.ndarray]]:
         """
@@ -330,6 +332,8 @@ class UrbanSound8kManager:
         := param: callbacks - List of parameters that help monitor and modify the behavior of your model during training, evaluation and inference.
         := return: A list with the performance mestrics (History) of the model at each fold.
         """
+
+        assert 0 < numberFolds <= 10, f"invalid number of iterations: {numberFolds}"
 
         # Initialize a list to store all the model's history for each fold
         histories = []
@@ -369,6 +373,7 @@ class UrbanSound8kManager:
                     X_train,
                     y_train,
                     validation_data=(X_val, y_val),
+                    batch_size=batchSize,
                     epochs=epochs,
                     callbacks=callbacks(),
                 )
@@ -379,13 +384,16 @@ class UrbanSound8kManager:
                 # Save the Model
                 compiledModel.save(modelFilePath)
 
+                # Clear session
+                keras.backend.clear_session()
+
             else:
                 # Load the previously computed fold history
                 history = loadObject(filePath=historyFilePath)
 
                 # Load the model
                 compiledModel = load_model(modelFilePath)
-            
+
             # Get predictions
             y_pred = np.argmax(compiledModel.predict(X_test), axis=1)
             y_true = np.argmax(y_test, axis=1)
