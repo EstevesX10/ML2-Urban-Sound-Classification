@@ -10,7 +10,7 @@ class MLP(keras.Model):
         super().__init__(*args, **kwargs)
     
     def createMLP(self, input_shape:Tuple, testNumber:int, numClasses:int=10) -> keras.Sequential:
-        if testNumber == 1:
+        if testNumber == 1 or testNumber == 2:
             return keras.Sequential([
                 Input(shape=input_shape),
 
@@ -28,8 +28,28 @@ class MLP(keras.Model):
                 
                 Dense(numClasses, activation='softmax')
             ])
-        elif testNumber == 2:
-            pass
+        
+        elif testNumber == 3:
+             return keras.Sequential([
+                Input(shape=input_shape),
+
+                Dense(256, activation='relu'),
+                BatchNormalization(),
+                Dropout(0.2),
+                
+                Dense(128, activation='relu'),
+                BatchNormalization(),
+                Dropout(0.2),
+                
+                Dense(64, activation='relu'),
+                BatchNormalization(),
+                Dropout(0.2),
+                
+                Dense(numClasses, activation='softmax')
+            ])
+        
+        else:
+            raise ValueError("TO BE IMPLEMENTED")
 
         # return keras.Sequential([
         #     Input(shape=input_shape),

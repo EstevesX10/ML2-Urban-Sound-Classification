@@ -107,7 +107,7 @@ def loadPathsConfig() -> dict:
         "ExploratoryDataAnalysis": "./ExperimentalResults/ExploratoryDataAnalysis",
         "Datasets": createDatasetsFolderPaths(numberFolds=10),
         "ModelDevelopmentAndEvaluation": {
-            "MLP": createModelResultsFolderPaths(modelName="MLP", numberTests=1, numberFolds=10),
+            "MLP": createModelResultsFolderPaths(modelName="MLP", numberTests=3, numberFolds=10),
             "CNN": createModelResultsFolderPaths(modelName="CNN", numberTests=1, numberFolds=10),
             "YAMNET": createModelResultsFolderPaths(modelName="YAMNET", numberTests=1, numberFolds=10),
             "ResNet": createModelResultsFolderPaths(modelName="ResNet", numberTests=2, numberFolds=10),
