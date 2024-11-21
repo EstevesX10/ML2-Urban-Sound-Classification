@@ -110,7 +110,7 @@ def loadPathsConfig() -> dict:
             "MLP": createModelResultsFolderPaths(modelName="MLP", numberTests=1, numberFolds=10),
             "CNN": createModelResultsFolderPaths(modelName="CNN", numberTests=1, numberFolds=10),
             "YAMNET": createModelResultsFolderPaths(modelName="YAMNET", numberTests=1, numberFolds=10),
-            "ResNet": createModelResultsFolderPaths(modelName="ResNet", numberTests=1, numberFolds=10),
+            "ResNet": createModelResultsFolderPaths(modelName="ResNet", numberTests=2, numberFolds=10),
             "yamnet-train": "./ExperimentalResults/ModelDevelopmentAndEvaluation/yamnet/train.pkl",
             "yamnet-test": "./ExperimentalResults/ModelDevelopmentAndEvaluation/yamnet/test.pkl",
         },

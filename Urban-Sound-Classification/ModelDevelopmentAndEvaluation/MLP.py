@@ -1,3 +1,4 @@
+from typing import Tuple
 import numpy as np
 import pandas as pd
 from tensorflow import keras
@@ -5,10 +6,31 @@ from tensorflow.keras.layers import (Input, Flatten, Conv1D, Conv2D, MaxPooling1
 from tensorflow.keras.regularizers import L2 # type: ignore
 
 class MLP(keras.Model):
-    def __init__(self, *args, **kwargs):
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
     
-    def createMLP(self, input_shape, numClasses=10):
+    def createMLP(self, input_shape:Tuple, testNumber:int, numClasses:int=10) -> keras.Sequential:
+        if testNumber == 1:
+            return keras.Sequential([
+                Input(shape=input_shape),
+
+                Dense(80, activation='relu'),
+                BatchNormalization(),
+                Dropout(0.2),
+                
+                Dense(40, activation='relu'),
+                BatchNormalization(),
+                Dropout(0.2),
+                
+                Dense(20, activation='relu'),
+                BatchNormalization(),
+                Dropout(0.2),
+                
+                Dense(numClasses, activation='softmax')
+            ])
+        elif testNumber == 2:
+            pass
+
         # return keras.Sequential([
         #     Input(shape=input_shape),
 
@@ -38,21 +60,3 @@ class MLP(keras.Model):
             
         #     Dense(numClasses, activation='softmax')
         # ])
-    
-        return keras.Sequential([
-            Input(shape=input_shape),
-
-            Dense(80, activation='relu'),
-            BatchNormalization(),
-            Dropout(0.2),
-            
-            Dense(40, activation='relu'),
-            BatchNormalization(),
-            Dropout(0.2),
-            
-            Dense(20, activation='relu'),
-            BatchNormalization(),
-            Dropout(0.2),
-            
-            Dense(numClasses, activation='softmax')
-        ])

@@ -1,3 +1,4 @@
+from typing import Tuple
 import numpy as np
 import tensorflow as tf
 
@@ -5,12 +6,12 @@ from tensorflow import keras
 from tensorflow.keras.layers import Layer # type: ignore
 from tensorflow.keras.layers import Input, Conv2D, BatchNormalization # type: ignore
 from tensorflow.keras.layers import MaxPooling2D, GlobalAveragePooling2D # type: ignore
-from tensorflow.keras.layers import Add, ReLU, Dense # type: ignore
+from tensorflow.keras.layers import Add, ReLU, Dense, Dropout # type: ignore
 from tensorflow.keras.utils import register_keras_serializable # type: ignore
 
 @register_keras_serializable()
 class ResidualBlock(Layer):
-    def __init__(self, filters, kernel_size=3, stride=1, **kwargs):
+    def __init__(self, filters:int, kernel_size:int=3, stride:int=1, **kwargs):
         super(ResidualBlock, self).__init__(**kwargs)
         self.stride = stride
         self.kernel_size = kernel_size
@@ -38,7 +39,7 @@ class ResidualBlock(Layer):
         self.add = Add()
         self.relu2 = ReLU()
 
-    def build(self, input_shape):
+    def build(self, input_shape:Tuple) -> None:
         # Define the skip connection
         if self.stride != 1 or input_shape[-1] != self.filters:
             self.skip_connection = keras.Sequential(
@@ -75,7 +76,7 @@ class ResidualBlock(Layer):
 
         return x
 
-    def get_config(self):
+    def get_config(self) -> dict:
         config = super().get_config()
         config.update({
             'filters': self.filters,
@@ -89,7 +90,7 @@ class ResidualBlock(Layer):
         return cls(**config)
 
 class ResNet(tf.keras.Model):
-    def __init__(self, input_shape, num_classes=10):
+    def __init__(self, input_shape:Tuple, num_classes:int=10) -> None:
         super().__init__()
 
         self.inputLayer = Input(shape=input_shape)
@@ -110,7 +111,7 @@ class ResNet(tf.keras.Model):
         self.globalAvgPool = GlobalAveragePooling2D()
         self.fullyConnectedLayer = Dense(num_classes, activation="softmax")
 
-    def _buildLayer(self, filters, blocks, stride):
+    def _buildLayer(self, filters, blocks, stride) -> keras.Sequential:
         # Create a list for the residual layers
         residualLayers = []
 
@@ -124,22 +125,46 @@ class ResNet(tf.keras.Model):
         # Grab all the residual layers and convert them into a Sequencial Model
         return keras.Sequential(residualLayers)
 
-    def createResNet(self):
-        return keras.Sequential([
-            # Initial layers
-            self.inputLayer,
-            self.conv,
-            self.bn,
-            self.relu,
-            self.pool,
+    def createResNet(self, testNumber:int) -> keras.Sequential:
+        if testNumber == 1:
+            return keras.Sequential([
+                # Initial layers
+                self.inputLayer,
+                self.conv,
+                self.bn,
+                self.relu,
+                self.pool,
 
-            # Residual blocks
-            self.layer1,
-            self.layer2,
-            self.layer3,
-            self.layer4,
+                # Residual blocks
+                self.layer1,
+                self.layer2,
+                self.layer3,
+                self.layer4,
 
-            # Apply Max Pool and apply a fully connected layer
-            self.globalAvgPool,
-            self.fullyConnectedLayer
-        ])
+                # Apply Max Pool and apply a fully connected layer
+                self.globalAvgPool,
+                self.fullyConnectedLayer
+            ])
+        elif testNumber == 2:
+            return keras.Sequential([
+                # Initial layers
+                self.inputLayer,
+                self.conv,
+                self.bn,
+                self.relu,
+                self.pool,
+
+                # Residual blocks
+                self.layer1,
+                Dropout(0.5),
+                self.layer2,
+                Dropout(0.5),
+                self.layer3,
+                Dropout(0.5),
+                self.layer4,
+                Dropout(0.5),
+
+                # Apply Max Pool and apply a fully connected layer
+                self.globalAvgPool,
+                self.fullyConnectedLayer
+            ])

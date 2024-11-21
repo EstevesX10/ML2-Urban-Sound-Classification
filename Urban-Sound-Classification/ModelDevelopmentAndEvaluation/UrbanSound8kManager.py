@@ -340,7 +340,7 @@ class UrbanSound8kManager:
         # Perform Cross-Validation
         for testFold in range(1, numberFolds + 1):
             # Create new instance of the Model
-            compiledModel = createModel()
+            compiledModel = createModel(testNumber=self.testNumber)
 
             # Partition the data into train and validation
             X_train, y_train, X_val, y_val, X_test, y_test = self.getTrainTestSplitFold(
