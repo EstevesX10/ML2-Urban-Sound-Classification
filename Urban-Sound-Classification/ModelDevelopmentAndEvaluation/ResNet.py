@@ -144,7 +144,7 @@ class ResNet(tf.keras.Model):
                 # Apply Max Pool and apply a fully connected layer
                 self.globalAvgPool,
                 self.fullyConnectedLayer
-            ])
+            ],name=f"ResNet-V{testNumber}")
         elif testNumber == 2:
             return keras.Sequential([
                 # Initial layers
@@ -167,7 +167,7 @@ class ResNet(tf.keras.Model):
                 # Apply Max Pool and apply a fully connected layer
                 self.globalAvgPool,
                 self.fullyConnectedLayer
-            ])
+            ], name=f"ResNet-V{testNumber}")
         elif testNumber == 3:
             return keras.Sequential([
                 # Initial layers
@@ -184,4 +184,4 @@ class ResNet(tf.keras.Model):
                 # Apply Max Pool and apply a fully connected layer
                 self.globalAvgPool,
                 self.fullyConnectedLayer
-            ])
+            ], name=f"ResNet-V{testNumber}")

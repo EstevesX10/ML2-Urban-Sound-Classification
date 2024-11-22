@@ -30,7 +30,7 @@ class CNN(keras.Model):
                 Dense(128, activation='relu'),
                 Dropout(0.5),
                 Dense(units=numClasses, activation='softmax')
-            ])
+            ], name=f"2D-CNN-V{testNumber}")
         elif testNumber == 2:
             pass
 

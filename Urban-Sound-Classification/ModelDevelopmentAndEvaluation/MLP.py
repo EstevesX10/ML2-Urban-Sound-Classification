@@ -27,7 +27,7 @@ class MLP(keras.Model):
                 Dropout(0.2),
                 
                 Dense(numClasses, activation='softmax')
-            ])
+            ], name=f"MLP-V{testNumber}")
         
         elif testNumber == 3:
              return keras.Sequential([
@@ -50,7 +50,7 @@ class MLP(keras.Model):
                 Dropout(0.5),
                 
                 Dense(numClasses, activation='softmax')
-            ])
+            ], name=f"MLP-V{testNumber}")
         
         else:
             raise ValueError("TO BE IMPLEMENTED")
