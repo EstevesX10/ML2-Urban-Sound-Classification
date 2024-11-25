@@ -2,37 +2,54 @@ from typing import Tuple
 import numpy as np
 import pandas as pd
 from tensorflow import keras
-from tensorflow.keras.layers import (Input, BatchNormalization, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dense, Dropout, LeakyReLU, SpatialDropout2D, GlobalAveragePooling2D) # type: ignore
+from tensorflow.keras.layers import Input, BatchNormalization, Flatten, Conv1D, Conv2D, MaxPooling1D, MaxPooling2D, Dense, Dropout, LeakyReLU, SpatialDropout2D, GlobalAveragePooling2D  # type: ignore
+
 
 class CNN(keras.Model):
     def __init__(self, *args, **kwargs) -> None:
         super().__init__(*args, **kwargs)
 
     # Architecture used in the "An Analysis of Audio Classification Techniques using Deep Learning Architectures" Paper
-    def create2DCNN(self, input_shape:Tuple, testNumber:int, numClasses:int=10) -> keras.Sequential:
+    def create2DCNN(
+        self, input_shape: Tuple, testNumber: int, numClasses: int = 10
+    ) -> keras.Sequential:
         if testNumber == 1:
-            return keras.Sequential([
-                Input(shape=input_shape),
-
-                Conv2D(32, (3, 3), activation='relu', padding='same'),
-                BatchNormalization(),
-                MaxPooling2D((2, 2)),
-                
-                Conv2D(64, (3, 3), activation='relu', padding='same'),
-                BatchNormalization(),
-                MaxPooling2D((2, 2)),
-                
-                Conv2D(128, (3, 3), activation='relu', padding='same'),
-                BatchNormalization(),
-                MaxPooling2D((2, 2)),
-                
-                Flatten(),
-                Dense(128, activation='relu'),
-                Dropout(0.5),
-                Dense(units=numClasses, activation='softmax')
-            ], name=f"2D-CNN-V{testNumber}")
+            return keras.Sequential(
+                [
+                    Input(shape=input_shape),
+                    Conv2D(32, (3, 3), activation="relu", padding="same"),
+                    BatchNormalization(),
+                    MaxPooling2D((2, 2)),
+                    Conv2D(64, (3, 3), activation="relu", padding="same"),
+                    BatchNormalization(),
+                    MaxPooling2D((2, 2)),
+                    Conv2D(128, (3, 3), activation="relu", padding="same"),
+                    BatchNormalization(),
+                    MaxPooling2D((2, 2)),
+                    Flatten(),
+                    Dense(128, activation="relu"),
+                    Dropout(0.5),
+                    Dense(units=numClasses, activation="softmax"),
+                ],
+                name=f"2D-CNN-V{testNumber}",
+            )
         elif testNumber == 2:
-            pass
+            return keras.Sequential(
+                [
+                    Input(shape=input_shape),
+                    Conv2D(32, (3, 3), activation="relu", padding="same"),
+                    BatchNormalization(),
+                    MaxPooling2D((2, 2)),
+                    Conv2D(32, (3, 3), activation="relu", padding="same"),
+                    BatchNormalization(),
+                    MaxPooling2D((2, 2)),
+                    Flatten(),
+                    Dense(128, activation="relu"),
+                    Dropout(0.5),
+                    Dense(units=numClasses, activation="softmax"),
+                ],
+                name=f"2D-CNN-V{testNumber}",
+            )
 
         # return keras.Sequential([
         #     Input(shape=input_shape),
