@@ -92,7 +92,7 @@ class CNN(keras.Model):
 
                     Flatten(),
                     Dense(128, activation="relu"),
-                    Dropout(0.75),
+                    Dropout(0.6),
                     Dense(units=numClasses, activation="softmax"),
                 ],
                 name=f"2D-CNN-V{testNumber}",
