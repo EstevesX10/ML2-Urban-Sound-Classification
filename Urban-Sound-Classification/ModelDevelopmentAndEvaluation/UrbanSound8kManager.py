@@ -74,7 +74,10 @@ class UrbanSound8kManager:
         := return: Train and Test Pandas DataFrames.
         """
 
-        if self.featuresToUse not in self.pathsConfig["Datasets"]["Fold-1"].keys():
+        if (
+            self.featuresToUse not in self.pathsConfig["Datasets"]["Fold-1"].keys()
+            and self.featuresToUse != "transfer"
+        ):
             # Invalid Data Dimensionality
             raise ValueError(
                 f'Invalid Features Selected! (Please choose from {self.pathsConfig["Datasets"]["Fold-1"].keys()})'
@@ -171,7 +174,10 @@ class UrbanSound8kManager:
         )
 
         # Evaluate the kind of data dimensionality provided and adapt the method to it
-        if self.featuresToUse == "1D-Processed-MFCCs" or self.featuresToUse == "1D-Processed-Features":
+        if (
+            self.featuresToUse == "1D-Processed-MFCCs"
+            or self.featuresToUse == "1D-Processed-Features"
+        ):
             # Define the columns of the features and the target
             featuresCols = train_df.columns[2 : len(train_df.columns) - numClasses]
             targetCols = train_df.columns[-numClasses:]
