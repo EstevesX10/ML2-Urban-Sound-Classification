@@ -5,7 +5,7 @@ import os
 from pathlib import Path
 
 from sklearn.preprocessing import LabelBinarizer, StandardScaler
-from sklearn.metrics import confusion_matrix
+from sklearn.metrics import accuracy_score, balanced_accuracy_score, confusion_matrix
 
 from tensorflow import keras
 from tensorflow.keras.callbacks import History  # type: ignore
@@ -268,7 +268,7 @@ class UrbanSound8kManager:
         df = self.manageData()
 
         # Evaluate the kind of data dimensionality provided and adapt the method to it
-        if self.featuresToUse == "1D":
+        if self.featuresToUse == "1D-Processed-MFCCs" or self.featuresToUse == "1D-Processed-Features":
             # Define the columns of the features and the target
             featuresCols = df.columns[2:-1]
             targetCols = df.columns[-1:]
@@ -277,7 +277,7 @@ class UrbanSound8kManager:
             X = df[featuresCols].to_numpy()
             y = df[targetCols].to_numpy()
 
-        elif self.featuresToUse == "2D":
+        elif self.featuresToUse == "2D-Raw-MFCCs":
             # Define the columns of the features and the target
             featuresCols = "MFCC"
             targetCols = df.columns[-1:]
@@ -315,7 +315,7 @@ class UrbanSound8kManager:
         epochs: int = 100,
         batchSize: int = 32,
         callbacks=lambda: [],
-    ) -> Tuple[list[History], list[np.ndarray]]:
+    ) -> Tuple[list[float], list[History], list[np.ndarray]]:
         """
         # Description
             -> This method allows to perform cross-validation over the UrbanSound8k dataset
@@ -335,6 +335,9 @@ class UrbanSound8kManager:
 
         # Initialize a list to store all the model's confusion matrices for each fold
         confusionMatrices = []
+
+        # Create a List to store the Folds Accuracies
+        foldsBalancedAccuracy = []
 
         # Perform Cross-Validation
         for testFold in range(1, numberFolds + 1):
@@ -393,6 +396,12 @@ class UrbanSound8kManager:
             y_pred = np.argmax(compiledModel.predict(X_test), axis=1)
             y_true = np.argmax(y_test, axis=1)
 
+            # Calculate the current fold Accuracy
+            currentFoldAccuracy = balanced_accuracy_score(y_true, y_pred)
+
+            # Append the current fold accuracy to the previous list
+            foldsBalancedAccuracy.append(currentFoldAccuracy)
+
             # Compute confusion matrix
             confusionMatrix = confusion_matrix(y_true, y_pred)
 
@@ -409,7 +418,7 @@ class UrbanSound8kManager:
             confusionMatrices.append(confusionMatrix)
 
         # Return the histories and the confusion matrices
-        return histories, confusionMatrices
+        return np.array(foldsBalancedAccuracy), histories, confusionMatrices
 
     def plotGlobalConfusionMatrix(self, confusionMatrices: list[np.ndarray]) -> None:
         """

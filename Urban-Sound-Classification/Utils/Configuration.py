@@ -118,7 +118,7 @@ def loadPathsConfig() -> dict:
                 modelName="CNN", numberTests=4, numberFolds=10
             ),
             "YAMNET": createModelResultsFolderPaths(
-                modelName="YAMNET", numberTests=1, numberFolds=10
+                modelName="YAMNET", numberTests=4, numberFolds=10
             ),
             "ResNet": createModelResultsFolderPaths(
                 modelName="ResNet", numberTests=3, numberFolds=10
