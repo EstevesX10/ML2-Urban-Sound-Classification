@@ -62,7 +62,7 @@ The project includes several key phases, including:
 
 ## UrbanSound8K Dataset
 
-The `UrbanSound8k` dataset contains **8732 labeled sound excerpts** (<=4s) of urban sounds from **10 classes**: air_conditioner, car_horn, children_playing, dog_bark, drilling, enginge_idling, gun_shot, jackhammer, siren, and street_music. The classes are drawn from the **urban sound taxonomy**.
+The `UrbanSound8k` dataset contains **8732 labeled sound excerpts** ($\le$ 4s) of urban sounds from **10 classes**: air_conditioner, car_horn, children_playing, dog_bark, drilling, enginge_idling, gun_shot, jackhammer, siren, and street_music. The classes are drawn from the **urban sound taxonomy**.
 
 For a **detailed description** of the dataset please consider checking the dataset web page available [here](https://urbansounddataset.weebly.com/urbansound8k.html). In case you are interested in the **compilation process**, the dataset creators have published a paper outlining the Taxonomy for Urban Sound Research. You can access it [here](https://www.justinsalamon.com/uploads/4/3/9/4/4394963/salamon_urbansound_acmmm14.pdf).
 
@@ -72,7 +72,173 @@ If you're interested in trying this project yourself, you'll need access to the 
 
 ## Project Results
 
-> ADD PROJECT RESULTS
+### Model Performance
+
+<!-- Network Architectures - Performances -->
+
+<table width="100%">
+    <thead>
+        <th>
+            <div align="center">
+                Network Architecture
+            </div>
+        </th>
+        <th>
+            <div align="center">
+                Final Global Confusion Matrix
+            </div>
+        </th>
+    </thead>
+    <tbody>
+        <tr>
+            <td width="25%">
+                <p align="center" width="100%">
+                    MLP
+                </p>
+            </td>
+            <td width="75%">
+                <p align="center">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/MLP_GlobalConfusionMatrix.png" width="50%" />
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <p align="center" width="100%">
+                    CNN
+                </p>
+            </td>
+            <td width="75%">
+                <p align="center">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CNN_GlobalConfusionMatrix.png" width="50%" />
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <p align="center" width="100%">
+                    CNN Pre-Trained with YAMNET
+                </p>
+            </td>
+            <td width="75%">
+                <p align="center">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CNN_YAMNET_GlobalConfusionMatrix.png" width="50%" />
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="25%">
+                <p align="center" width="100%">
+                    ResNet
+                </p>
+            </td>
+            <td width="75%">
+                <p align="center">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/ResNet_GlobalConfusionMatrix.png" width="50%" />
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+- **MLP**: Achieved **45%** accuracy, struggling with the complexity of the sound data.
+- **CNN**: Performed better at **55%**, benefiting from 2D time-frequency representations (MFCCs).
+- **YAMNet**: Leveraging transfer learning, YAMNet outperformed other models with **70%** accuracy.
+- **ResNet**: Achieved **55%**, similar to CNN, but not as effective as YAMNet.
+
+### Dimensionality Reduction Visualization
+
+<!-- Data Distribution Scatter Plots -->
+
+<table width="100%">
+    <thead align="center">
+        <th colspan="3">
+            <div align="center">Data Distribution Scatter Plots</div>
+        </th>
+    </thead>
+    <tbody>
+        <tr>
+            <td></td>
+            <td>
+                <div align="center">
+                    1-Dimensional Processed MFCC's
+                </div>
+            </td>
+            <td>
+                <div align="center">
+                    2-Dimensional Raw MFCC's
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="10%">
+                <p align="center" width="100%">
+                    PCA
+                </p>
+            </td>
+            <td width="45%">
+                <p align="center" width="100%">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/DataDistributionPlots/PCA-Plot-1D-Data.png" width="100%"/>
+                </p>
+            </td>
+            <td width="45%">
+                <p align="center" width="100%">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/DataDistributionPlots/PCA-Plot-2D-Data.png" width="100%"/>
+                </p>
+            </td>
+        </tr>
+        <tr>
+            <td width="10%">
+                <p align="center" width="100%">
+                    t-SNE
+                </p>
+            </td>
+            <td width="45%">
+                <p align="center" width="100%">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/DataDistributionPlots/t-SNE-Plot-1D-Data.png" width="100%"/>
+                </p>
+            </td>
+            <td width="45%">
+                <p align="center" width="100%">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/DataDistributionPlots/t-SNE-Plot-2D-Data.png" width="100%"/>
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+### Critical Differences Diagram
+
+<!-- Critical Differences Diagram -->
+
+<table width="40%" height="40%">
+    <thead>
+        <th>
+            <div align="center">
+                Critical Differences Diagram
+            </div>
+        </th>
+    </thead>
+    <tbody>
+        <tr>
+            <td width="40%">
+                <p align="center">
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CriticalDifferencesDiagram.png" />
+                </p>
+            </td>
+        </tr>
+    </tbody>
+</table>
+
+This **critical difference** diagram shows the ranks of every model:
+
+1. **YAMNET (1)** is the best model, significantly **outperforming others**.
+2. **CNN (2.6)** and **ResNet (2.6)** have similar performance, with **no statistical difference** between them.
+3. **MLP (3.8)** is the worst, significantly **worse than YAMNET** and likely CNN / ResNet.
+
+## Conclusion
+
+Our experiments showed that **YAMNet** with transfer learning produced the best results. Regularization techniques such as **Dropout** and **L2 regularization** helped **reduce overfitting**. While the models performed well overall, difficulties in distinguishing **similar sound classes** suggest that further improvements in feature extraction and model design could enhance performance.
 
 ## Authorship
 
