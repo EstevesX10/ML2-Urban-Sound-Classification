@@ -39,13 +39,26 @@
 
 ## Project Overview
 
-> ADD PROJECT OVERVIEW
+`Sound Classification` is considered one of the most important tasks in the field of **deep learning**. It has great impact on applications of **voice recognition** within virtual assistants (Like Siri or Alexa), **customer service** as well as in **music and media content recommendation systems**. Moreover, it also impacts the Medical field wheteher to detect abnormalities in heartbeats or repiratory sounds. In addition it is also used within **Security and Surveillance systems** to help detect and assess a possible security breach inside a home whether it is infered by distress calls or even gunshots and glass breaking. Therefore, we aim to develop **deep learning algorithms** that can enable us to properly classify some environmental sounds provided by the `UrbanSound8k Dataset`.
 
-## Project Development (Dependencies & Execution)
+## Project Development
+
+### Dependencies & Execution
 
 This project was developed using a `Notebook`. Therefore if you're looking forward to test it out yourself, keep in mind to either use a **[Anaconda Distribution](https://www.anaconda.com/)** or a 3rd party software that helps you inspect and execute it.
 
 Therefore, for more informations regarding the **Virtual Environment** used in Anaconda, consider checking the [DEPENDENCIES.md](https://github.com/EstevesX10/_REPO_NAME_/blob/main/DEPENDENCIES.md) file.
+
+### Planned Work
+
+The project includes several key phases, including:
+
+1. `Exploratory Data Analysis` : We begin by **examining the UrbanSound8k dataset** to gain deeper insights into its **structure and content** to helps us understand the distribution of sound classes.
+2. `Data pre-processing` : **Cleaning and Preparing the audio samples** to ensure their consistency and quality over the .
+3. `Feature Engineering` : Utilizing the **Librosa** library, we extract **meaningful features** from the audio data such as **Mel-frequency cepstral coefficients (MFCCs)**.
+4. `Model architecture definition` : We develop the **architecture of artificial neural networks** tailored for sound classification, which involves **experimenting with different deep learning models**.
+5. `Training and Performance Evaluation` : Employing the pre-partitioned dataset, we perform **10-fold cross-validation** on each developed networks to then assess the models' performance using key metrics such as accuracy and confusion matrices.
+6. `Statistical Inference` : Perform a **Statistical Evaluation** of the performance between all the developed networks.
 
 ## UrbanSound8K Dataset
 
