@@ -210,25 +210,26 @@ If you're interested in trying this project yourself, you'll need access to the 
 ### Critical Differences Diagram
 
 <!-- Critical Differences Diagram -->
-
-<table width="40%" height="40%">
-    <thead>
-        <th>
-            <div align="center">
-                Critical Differences Diagram
-            </div>
-        </th>
-    </thead>
-    <tbody>
-        <tr>
-            <td width="40%">
-                <p align="center">
-                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CriticalDifferencesDiagram.png" />
-                </p>
-            </td>
-        </tr>
-    </tbody>
-</table>
+<div align="center">
+    <table width="30%" height="30%">
+        <thead>
+            <th>
+                <div align="center">
+                    Critical Differences Diagram
+                </div>
+            </th>
+        </thead>
+        <tbody>
+            <tr>
+                <td>
+                    <p align="center">
+                        <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CriticalDifferencesDiagram.png" />
+                    </p>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
 
 This **critical difference** diagram shows the ranks of every model:
 
