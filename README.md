@@ -76,7 +76,7 @@ If you're interested in trying this project yourself, you'll need access to the 
 
 <!-- Network Architectures - Performances -->
 
-<table width="100%">
+<table width="10%">
     <thead>
         <th>
             <div align="center">
@@ -91,50 +91,50 @@ If you're interested in trying this project yourself, you'll need access to the 
     </thead>
     <tbody>
         <tr>
-            <td width="25%">
-                <p align="center" width="100%">
+            <td>
+                <p align="center">
                     MLP
                 </p>
             </td>
-            <td width="75%">
+            <td>
                 <p align="center">
-                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/MLP_GlobalConfusionMatrix.png" width="50%" />
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/MLP_GlobalConfusionMatrix.png" width="70%" />
                 </p>
             </td>
         </tr>
         <tr>
-            <td width="25%">
-                <p align="center" width="100%">
+            <td>
+                <p align="center">
                     CNN
                 </p>
             </td>
-            <td width="75%">
+            <td>
                 <p align="center">
-                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CNN_GlobalConfusionMatrix.png" width="50%" />
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CNN_GlobalConfusionMatrix.png" width="70%" />
                 </p>
             </td>
         </tr>
         <tr>
-            <td width="25%">
-                <p align="center" width="100%">
+            <td>
+                <p align="center">
                     CNN Pre-Trained with YAMNET
                 </p>
             </td>
-            <td width="75%">
+            <td>
                 <p align="center">
-                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CNN_YAMNET_GlobalConfusionMatrix.png" width="50%" />
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/CNN_YAMNET_GlobalConfusionMatrix.png" width="70%" />
                 </p>
             </td>
         </tr>
         <tr>
-            <td width="25%">
-                <p align="center" width="100%">
+            <td>
+                <p align="center">
                     ResNet
                 </p>
             </td>
-            <td width="75%">
+            <td>
                 <p align="center">
-                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/ResNet_GlobalConfusionMatrix.png" width="50%" />
+                    <img src="./Urban-Sound-Classification/ExperimentalResults/ModelPerformancePlots/ResNet_GlobalConfusionMatrix.png" width="70%" />
                 </p>
             </td>
         </tr>
