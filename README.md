@@ -23,16 +23,16 @@
 <br/>
 
 <div align="center">
-    <a href="https://github.com/EstevesX10/_REPO_NAME_/blob/main/LICENSE">
-        <img src="https://img.shields.io/github/license/EstevesX10/_REPO_NAME_?style=flat&logo=gitbook&logoColor=fec8bf&label=License&color=fec8bf">
+    <a href="https://github.com/EstevesX10/ML2-Urban-Sound-Classification/blob/main/LICENSE">
+        <img src="https://img.shields.io/github/license/EstevesX10/ML2-Urban-Sound-Classification?style=flat&logo=gitbook&logoColor=fec8bf&label=License&color=fec8bf">
     </a>
     <a href="">
-        <img src="https://img.shields.io/github/repo-size/EstevesX10/_REPO_NAME_?style=flat&logo=googlecloudstorage&logoColor=fec8bf&logoSize=auto&label=Repository%20Size&color=fec8bf">
+        <img src="https://img.shields.io/github/repo-size/EstevesX10/ML2-Urban-Sound-Classification?style=flat&logo=googlecloudstorage&logoColor=fec8bf&logoSize=auto&label=Repository%20Size&color=fec8bf">
     </a>
     <a href="">
-        <img src="https://img.shields.io/github/stars/EstevesX10/_REPO_NAME_?style=flat&logo=adafruit&logoColor=fec8bf&logoSize=auto&label=Stars&color=fec8bf">
+        <img src="https://img.shields.io/github/stars/EstevesX10/ML2-Urban-Sound-Classification?style=flat&logo=adafruit&logoColor=fec8bf&logoSize=auto&label=Stars&color=fec8bf">
     </a>
-    <a href="https://github.com/EstevesX10/_REPO_NAME_/blob/main/DEPENDENCIES.md">
+    <a href="https://github.com/EstevesX10/ML2-Urban-Sound-Classification/blob/main/DEPENDENCIES.md">
         <img src="https://img.shields.io/badge/Dependencies-DEPENDENCIES.md-white?style=flat&logo=anaconda&logoColor=fec8bf&logoSize=auto&color=fec8bf"> 
     </a>
 </div>
@@ -47,7 +47,7 @@
 
 This project was developed using a `Notebook`. Therefore if you're looking forward to test it out yourself, keep in mind to either use a **[Anaconda Distribution](https://www.anaconda.com/)** or a 3rd party software that helps you inspect and execute it.
 
-Therefore, for more informations regarding the **Virtual Environment** used in Anaconda, consider checking the [DEPENDENCIES.md](https://github.com/EstevesX10/_REPO_NAME_/blob/main/DEPENDENCIES.md) file.
+Therefore, for more informations regarding the **Virtual Environment** used in Anaconda, consider checking the [DEPENDENCIES.md](https://github.com/EstevesX10/ML2-Urban-Sound-Classification/blob/main/DEPENDENCIES.md) file.
 
 ### Planned Work
 
