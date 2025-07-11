@@ -5,7 +5,7 @@
 </div>
 
 <p align="center" width="100%">
-    <img src="./Urban-Sound-Classification/Assets/NoisePolution.jpeg" width="55%" height="55%" />
+    <img src="./Urban-Sound-Classification/Assets/NoisePolution.jpeg" width="55%" />
 </p>
 
 <div align="center">
